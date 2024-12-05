@@ -1,0 +1,43 @@
+{
+  "name": "speech-2.0",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon",
+    "build": "rimraf ./dist && tsc",
+    "start": "npm run build && node dist/app.js",
+    "typeorm": "typeorm-ts-node-esm",
+    "migrations:generate": "node ./create-migrations.js",
+    "migrations:run": "typeorm migration:run",
+    "migrations:revert": "typeorm migration:revert",
+    "migrations:delete": "typeorm migration:revert && rm -rf ./src/db/migrations/*"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@hapi/boom": "^10.0.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "joi": "^17.13.3",
+    "langchain": "^0.3.6",
+    "mssql": "^10.0.4",
+    "openai": "^4.73.1",
+    "reflect-metadata": "^0.2.2",
+    "speech-2.0": "file:",
+    "typeorm": "^0.3.6",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.2/xlsx-0.20.2.tgz"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.0",
+    "nodemon": "^3.1.7",
+    "rimraf": "^6.0.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
+  }
+}
