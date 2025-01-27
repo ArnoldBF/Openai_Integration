@@ -6,14 +6,17 @@ import {
     UpdateDateColumn,
     OneToMany,
 } from "typeorm";
-import { Servicio } from "./index";
-@Entity("clientes")
-export class Cliente {
+import { DataAudio } from "./index";
+@Entity("claves_audios")
+export class ClaveAudio {
     @PrimaryGeneratedColumn()
     id!: number;
 
     @Column({ unique: true })
-    name!: string;
+    clave!: string;
+
+    @Column()
+    descripcion!: string;
 
     @CreateDateColumn({ type: "datetime2", default: () => "CURRENT_TIMESTAMP" })
     created_at!: Date;
@@ -21,8 +24,8 @@ export class Cliente {
     @UpdateDateColumn({ type: "datetime2", default: () => "CURRENT_TIMESTAMP" })
     updated_at!: Date;
 
-    @OneToMany(() => Servicio, (servicio) => servicio.cliente, {
+    @OneToMany(() => DataAudio, (data) => data.clave, {
         cascade: true,
     })
-    servicio!: Servicio[];
+    data!: DataAudio[];
 }

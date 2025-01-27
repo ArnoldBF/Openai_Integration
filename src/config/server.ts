@@ -71,7 +71,7 @@ class Server {
 
     private async dbConection() {
         await connectDatabase();
-        await this.fileManeger.procesarArchivos(10);
+        // await this.fileManeger.procesarArchivos(10);
     }
 
     private routes() {

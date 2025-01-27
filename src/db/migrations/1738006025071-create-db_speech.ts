@@ -177,7 +177,7 @@ export class CreateDbSpeech1738006025071 implements MigrationInterface {
                         isNullable: false,
                     },
                     {
-                        name: "clave",
+                        name: "clave_id",
                         type: "int",
                         isNullable: true,
                     },
