@@ -5,9 +5,7 @@ import {
     TableForeignKey,
 } from "typeorm";
 
-export class CreateAudiosAndMetadata1732734072182
-    implements MigrationInterface
-{
+export class CreateDbSpeech1738006025071 implements MigrationInterface {
     public async up(queryRunner: QueryRunner): Promise<void> {
         // Crear tabla 'Cientes'
         await queryRunner.createTable(
@@ -235,6 +233,198 @@ export class CreateAudiosAndMetadata1732734072182
                         type: "datetime2",
                         default: "CURRENT_TIMESTAMP",
                     },
+                    {
+                        name: "updated_at",
+                        type: "datetime2",
+                        default: "CURRENT_TIMESTAMP",
+                        onUpdate: "CURRENT_TIMESTAMP",
+                    },
+                ],
+            }),
+            true
+        );
+
+        await queryRunner.createTable(
+            new Table({
+                name: "tipo_analisis",
+                columns: [
+                    {
+                        name: "id",
+                        type: "int",
+                        isPrimary: true,
+                        isGenerated: true,
+                        generationStrategy: "increment",
+                    },
+                    {
+                        name: "name",
+                        type: "int",
+                        isNullable: false,
+                    },
+                    {
+                        name: "created_at",
+                        type: "datetime2",
+                        default: "CURRENT_TIMESTAMP",
+                    },
+                    {
+                        name: "updated_at",
+                        type: "datetime2",
+                        default: "CURRENT_TIMESTAMP",
+                        onUpdate: "CURRENT_TIMESTAMP",
+                    },
+                ],
+            }),
+            true
+        );
+        await queryRunner.createTable(
+            new Table({
+                name: "prompts",
+                columns: [
+                    {
+                        name: "id",
+                        type: "int",
+                        isPrimary: true,
+                        isGenerated: true,
+                        generationStrategy: "increment",
+                    },
+                    {
+                        name: "name",
+                        type: "varchar",
+                        isUnique: true,
+                    },
+                    {
+                        name: "template",
+                        type: "text",
+                    },
+                    {
+                        name: "created_at",
+                        type: "datetime2",
+                        default: "CURRENT_TIMESTAMP",
+                    },
+                    {
+                        name: "updated_at",
+                        type: "datetime2",
+                        default: "CURRENT_TIMESTAMP",
+                        onUpdate: "CURRENT_TIMESTAMP",
+                    },
+                ],
+            }),
+            true
+        );
+
+        await queryRunner.createTable(
+            new Table({
+                name: "claves_analisis",
+                columns: [
+                    {
+                        name: "id",
+                        type: "int",
+                        isPrimary: true,
+                        isGenerated: true,
+                        generationStrategy: "increment",
+                    },
+                    {
+                        name: "clave",
+                        type: "varchar",
+                        isUnique: true,
+                    },
+                    {
+                        name: "descripcion",
+                        type: "text",
+                    },
+                    {
+                        name: "created_at",
+                        type: "datetime2",
+                        default: "CURRENT_TIMESTAMP",
+                    },
+                    {
+                        name: "updated_at",
+                        type: "datetime2",
+                        default: "CURRENT_TIMESTAMP",
+                        onUpdate: "CURRENT_TIMESTAMP",
+                    },
+                ],
+            }),
+            true
+        );
+
+        await queryRunner.createTable(
+            new Table({
+                name: "data_analisis",
+                columns: [
+                    {
+                        name: "id",
+                        type: "int",
+                        isPrimary: true,
+                        isGenerated: true,
+                        generationStrategy: "increment",
+                    },
+                    {
+                        name: "analisis_id",
+                        type: "int",
+                        isNullable: false,
+                    },
+                    {
+                        name: "clave_id",
+                        type: "int",
+                        isNullable: false,
+                    },
+                    {
+                        name: "valor",
+                        type: "text",
+                    },
+                    {
+                        name: "created_at",
+                        type: "datetime2",
+                        default: "CURRENT_TIMESTAMP",
+                    },
+                    {
+                        name: "updated_at",
+                        type: "datetime2",
+                        default: "CURRENT_TIMESTAMP",
+                        onUpdate: "CURRENT_TIMESTAMP",
+                    },
+                ],
+            }),
+            true
+        );
+
+        await queryRunner.createTable(
+            new Table({
+                name: "analisis",
+                columns: [
+                    {
+                        name: "id",
+                        type: "int",
+                        isPrimary: true,
+                        isGenerated: true,
+                        generationStrategy: "increment",
+                    },
+                    {
+                        name: "tipo_analisis_id",
+                        type: "int",
+                        isNullable: false,
+                    },
+                    {
+                        name: "prompt_id",
+                        type: "int",
+                        isNullable: false,
+                    },
+                    {
+                        name: "transcripcion_id",
+                        type: "int",
+                        isNullable: false,
+                    },
+                    {
+                        name: "created_at",
+                        type: "datetime2",
+                        default: "CURRENT_TIMESTAMP",
+                    },
+                    {
+                        name: "updated_at",
+                        type: "datetime2",
+                        default: "CURRENT_TIMESTAMP",
+                        onUpdate: "CURRENT_TIMESTAMP",
+                    },
                 ],
             }),
             true
@@ -277,7 +467,7 @@ export class CreateAudiosAndMetadata1732734072182
         await queryRunner.createForeignKey(
             "data_audios",
             new TableForeignKey({
-                columnNames: ["clave"],
+                columnNames: ["clave_id"],
                 referencedColumnNames: ["id"],
                 referencedTableName: "claves_audios",
                 onDelete: "CASCADE",
@@ -292,6 +482,56 @@ export class CreateAudiosAndMetadata1732734072182
                 columnNames: ["audio_id"],
                 referencedColumnNames: ["id"],
                 referencedTableName: "audios",
+                onDelete: "CASCADE",
+            })
+        );
+
+        await queryRunner.createForeignKey(
+            "analisis",
+            new TableForeignKey({
+                columnNames: ["transcripcion_id"],
+                referencedColumnNames: ["id"],
+                referencedTableName: "transcripciones",
+                onDelete: "CASCADE",
+            })
+        );
+
+        await queryRunner.createForeignKey(
+            "analisis",
+            new TableForeignKey({
+                columnNames: ["tipo_analisis_id"],
+                referencedColumnNames: ["id"],
+                referencedTableName: "tipo_analisis",
+                onDelete: "CASCADE",
+            })
+        );
+
+        await queryRunner.createForeignKey(
+            "analisis",
+            new TableForeignKey({
+                columnNames: ["prompt_id"],
+                referencedColumnNames: ["id"],
+                referencedTableName: "prompts",
+                onDelete: "CASCADE",
+            })
+        );
+
+        await queryRunner.createForeignKey(
+            "data_analisis",
+            new TableForeignKey({
+                columnNames: ["analisis_id"],
+                referencedColumnNames: ["id"],
+                referencedTableName: "analisis",
+                onDelete: "CASCADE",
+            })
+        );
+
+        await queryRunner.createForeignKey(
+            "data_analisis",
+            new TableForeignKey({
+                columnNames: ["clave_id"],
+                referencedColumnNames: ["id"],
+                referencedTableName: "claves_analisis",
                 onDelete: "CASCADE",
             })
         );
@@ -342,6 +582,57 @@ export class CreateAudiosAndMetadata1732734072182
             await queryRunner.dropForeignKey("servicios", foreignKeyServicios);
         }
 
+        const tablaDataAnalisis = await queryRunner.getTable("data_analisis");
+        const fkDataAnalisis = tablaDataAnalisis!.foreignKeys.find(
+            (fk) => fk.columnNames.indexOf("analisis_id") !== -1
+        );
+
+        if (fkDataAnalisis) {
+            await queryRunner.dropForeignKey("data_analisis", fkDataAnalisis);
+        }
+
+        const tablaDataAnalisisClave = await queryRunner.getTable(
+            "data_analisis"
+        );
+        const fkDataAnalisisClave = tablaDataAnalisisClave!.foreignKeys.find(
+            (fk) => fk.columnNames.indexOf("clave_id") !== -1
+        );
+
+        if (fkDataAnalisisClave) {
+            await queryRunner.dropForeignKey(
+                "data_analisis",
+                fkDataAnalisisClave
+            );
+        }
+
+        const tablaAnalisis = await queryRunner.getTable("analisis");
+        const fkAnalisisTranscripcion = tablaAnalisis!.foreignKeys.find(
+            (fk) => fk.columnNames.indexOf("transcripcion_id") !== -1
+        );
+
+        if (fkAnalisisTranscripcion) {
+            await queryRunner.dropForeignKey(
+                "analisis",
+                fkAnalisisTranscripcion
+            );
+        }
+
+        const fkAnalisisTipo = tablaAnalisis!.foreignKeys.find(
+            (fk) => fk.columnNames.indexOf("tipo_analisis_id") !== -1
+        );
+
+        if (fkAnalisisTipo) {
+            await queryRunner.dropForeignKey("analisis", fkAnalisisTipo);
+        }
+
+        const fkAnalisisPrompt = tablaAnalisis!.foreignKeys.find(
+            (fk) => fk.columnNames.indexOf("prompt_id") !== -1
+        );
+
+        if (fkAnalisisPrompt) {
+            await queryRunner.dropForeignKey("analisis", fkAnalisisPrompt);
+        }
+
         // Eliminar tablas en orden inverso a su creación
         await queryRunner.dropTable("transcripciones");
         await queryRunner.dropTable("data_audios");
@@ -349,5 +640,10 @@ export class CreateAudiosAndMetadata1732734072182
         await queryRunner.dropTable("claves_audios");
         await queryRunner.dropTable("servicios");
         await queryRunner.dropTable("clientes");
+        await queryRunner.dropTable("data_analisis");
+        await queryRunner.dropTable("claves_analisis");
+        await queryRunner.dropTable("analisis");
+        await queryRunner.dropTable("tipo_analisis");
+        await queryRunner.dropTable("prompts");
     }
 }
