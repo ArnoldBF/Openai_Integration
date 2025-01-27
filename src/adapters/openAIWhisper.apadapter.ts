@@ -5,7 +5,7 @@ import { OpenAI } from "openai";
 export class OpenAIAdapterWhisper implements IOpenAITranscribir {
     private openAI: OpenAI;
 
-    constructor(apiKey: string) {
+    constructor(apiKey: string | undefined) {
         this.openAI = new OpenAI({ apiKey });
     }
 

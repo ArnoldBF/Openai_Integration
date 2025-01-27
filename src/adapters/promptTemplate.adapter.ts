@@ -4,7 +4,7 @@ import { IPromptTemplate } from "../interfaces/IPromptTemplate";
 export class PromptTemplateAdapter implements IPromptTemplate {
     private promptTemplate: PromptTemplate;
 
-    constructor(template: string, inputVariables: string[]) {
+    constructor(template: any, inputVariables: string[]) {
         this.promptTemplate = new PromptTemplate({ template, inputVariables });
     }
 

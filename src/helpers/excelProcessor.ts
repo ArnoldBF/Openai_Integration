@@ -28,3 +28,7 @@ export class ExcelProcessor {
         return extractedData;
     }
 }
+
+// const excelProcessor = new ExcelProcessor("prueba1.xlsx");
+
+// console.log(excelProcessor.processFile());

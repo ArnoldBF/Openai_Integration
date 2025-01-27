@@ -1,24 +1,7 @@
 import fs from "fs/promises";
 
 export class DataExtractorTxt {
-    private camposNecesarios: string[];
-
-    constructor() {
-        this.camposNecesarios = [
-            "fecha",
-            "hora",
-            "nodo",
-            "canal",
-            "segundos",
-            "entrasale",
-            "nrolinea",
-            "nroremoto",
-            "linkid",
-            "idlinea",
-            "campaña",
-            "cliente",
-        ];
-    }
+    constructor() {}
 
     public async extraerDatos(
         rutaArchivoTxt: string
@@ -28,27 +11,23 @@ export class DataExtractorTxt {
             encoding: "utf-8",
         });
         const lineas = contenido.split("\n");
-
         for (const linea of lineas) {
             let lineaNormalizada = linea.normalize("NFC").trim();
-
             if (!lineaNormalizada) {
                 continue;
             }
-
             // Reemplazo explícito de caracteres problemáticos (como "Campa�a")
             lineaNormalizada = lineaNormalizada
-                .replace(/Campa�a/g, "campaña")
+                .replace(/[\w�]*\u00f1[\w�]*/gi, (match) => {
+                    return match.replace(/\u00f1/gi, "ñ");
+                })
                 .trim();
-
             const coincidencia = lineaNormalizada
                 .trim()
-                .match(/([\wñáéíóúÁÉÍÓÚüÜ\s]+)=\s*(.+)/);
-
+                .match(/([a-zA-Z0-9ñÑáéíóúÁÉÍÓÚüÜ\s]+)\s*[=:|-]\s*(.+)/);
             if (coincidencia) {
                 let clave = coincidencia[1].toLowerCase().trim();
                 let valor: string | number | Date = coincidencia[2].trim();
-
                 if (clave === "fecha") {
                     if (/^\d{8}$/.test(valor)) {
                         valor = new Date(
@@ -62,19 +41,16 @@ export class DataExtractorTxt {
                 } else if (clave === "segundos") {
                     valor = isNaN(parseInt(valor)) ? 0 : parseInt(valor);
                 }
-
                 datos[clave] = valor;
             }
         }
-
-        // Validar que todos los campos necesarios estén presentes
-        const faltantes = this.camposNecesarios.filter(
-            (campo) => !(campo in datos)
-        );
-        if (faltantes.length > 0) {
-            throw new Error(`Faltan los campos: ${faltantes.join(", ")}`);
-        }
-
         return datos;
     }
 }
+
+// const extractor = new DataExtractorTxt();
+// extractor
+//     .extraerDatos("20240708084722_31576373319054600_2_504.txt")
+//     .then((datos) => {
+//         console.log(datos);
+//     });
