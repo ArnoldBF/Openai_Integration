@@ -18,12 +18,13 @@ export class Transcripcion {
     @Column({ name: "file_name", unique: true })
     @Index()
     fileName!: string;
-
     @Column({ nullable: true })
     transcripcion!: string;
 
     @CreateDateColumn({ type: "datetime2", default: () => "CURRENT_TIMESTAMP" })
     created_at!: Date;
+    @UpdateDateColumn({ type: "datetime2", default: () => "CURRENT_TIMESTAMP" })
+    updated_at!: Date;
 
     @OneToOne(() => Audio, (audio) => audio.transcripcion, {
         onDelete: "CASCADE",

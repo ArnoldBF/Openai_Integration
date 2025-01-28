@@ -1,11 +1,12 @@
+import internal from "stream";
 import { AppDataSource } from "../../config/typeOrm";
-import { DataAudio, Audio } from "../../models/index";
+import { DataAudio, Audio, ClaveAudio } from "../../models/index";
 
 import boom from "@hapi/boom";
 
 export interface DataAudioInterface {
     audio: Audio;
-    clave?: string;
+    clave?: ClaveAudio;
     valor?: string;
 }
 
