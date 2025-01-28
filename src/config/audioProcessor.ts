@@ -79,7 +79,7 @@ export class AudioProcessor {
                 for (const data of registroData) {
                     const dataAudio: DataAudioInterface = {
                         audio: data.audio,
-                        clave: data.clave,
+                        // clave: data.clave,
                         valor: data.valor,
                     };
                     await this.dataAudioService.createDataAudio(dataAudio);

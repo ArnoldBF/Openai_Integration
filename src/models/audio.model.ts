@@ -7,9 +7,11 @@ import {
     Index,
     OneToMany,
     OneToOne,
+    ManyToOne,
+    JoinColumn,
 } from "typeorm";
-import { DataAudio } from "./dataAudio.model";
-import { Transcripcion } from "./transcripcion.model";
+
+import { DataAudio, Transcripcion, Servicio } from "./index";
 @Entity("audios")
 export class Audio {
     @PrimaryGeneratedColumn()
@@ -18,10 +20,6 @@ export class Audio {
     @Column({ name: "file_name", unique: true })
     @Index()
     fileName!: string;
-
-    @Column()
-    @Index()
-    servicio!: string;
 
     @Column({ nullable: true })
     transcrito!: number;
@@ -39,4 +37,10 @@ export class Audio {
         cascade: true,
     })
     transcripcion!: Transcripcion;
+
+    @ManyToOne(() => Servicio, (servicio) => servicio.audio, {
+        onDelete: "CASCADE",
+    })
+    @JoinColumn({ name: "servicio_id" })
+    servicio!: Servicio;
 }

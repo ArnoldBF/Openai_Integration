@@ -4,11 +4,14 @@ import {
     PrimaryGeneratedColumn,
     CreateDateColumn,
     UpdateDateColumn,
+    ManyToOne,
+    JoinColumn,
     OneToMany,
 } from "typeorm";
-import { Servicio } from "./index";
+
+import { Cliente, Audio } from "./index";
 @Entity("clientes")
-export class Cliente {
+export class Servicio {
     @PrimaryGeneratedColumn()
     id!: number;
 
@@ -21,8 +24,12 @@ export class Cliente {
     @UpdateDateColumn({ type: "datetime2", default: () => "CURRENT_TIMESTAMP" })
     updated_at!: Date;
 
-    @OneToMany(() => Servicio, (servicio) => servicio.cliente, {
-        cascade: true,
+    @ManyToOne(() => Cliente, (cliente) => cliente.servicio, {
+        onDelete: "CASCADE",
     })
-    servicio!: Servicio[];
+    @JoinColumn({ name: "cliente_id" })
+    cliente!: Cliente;
+
+    @OneToMany(() => Audio, (audio) => audio.servicio, { cascade: true })
+    audio!: Audio[];
 }

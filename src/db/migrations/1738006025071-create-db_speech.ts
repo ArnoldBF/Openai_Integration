@@ -3,6 +3,7 @@ import {
     QueryRunner,
     Table,
     TableForeignKey,
+    TableIndex,
 } from "typeorm";
 
 export class CreateDbSpeech1738006025071 implements MigrationInterface {
@@ -177,7 +178,7 @@ export class CreateDbSpeech1738006025071 implements MigrationInterface {
                         isNullable: false,
                     },
                     {
-                        name: "clave",
+                        name: "clave_id",
                         type: "int",
                         isNullable: true,
                     },
@@ -257,7 +258,7 @@ export class CreateDbSpeech1738006025071 implements MigrationInterface {
                     },
                     {
                         name: "name",
-                        type: "int",
+                        type: "varchar",
                         isNullable: false,
                     },
                     {
@@ -400,12 +401,7 @@ export class CreateDbSpeech1738006025071 implements MigrationInterface {
                         generationStrategy: "increment",
                     },
                     {
-                        name: "tipo_analisis_id",
-                        type: "int",
-                        isNullable: false,
-                    },
-                    {
-                        name: "prompt_id",
+                        name: "parametro_id",
                         type: "int",
                         isNullable: false,
                     },
@@ -430,6 +426,90 @@ export class CreateDbSpeech1738006025071 implements MigrationInterface {
             true
         );
 
+        await queryRunner.createTable(
+            new Table({
+                name: "parametros_analisis",
+                columns: [
+                    {
+                        name: "id",
+                        type: "int",
+                        isPrimary: true,
+                        isGenerated: true,
+                        generationStrategy: "increment",
+                    },
+                    {
+                        name: "prompt_id",
+                        type: "int",
+                        isNullable: false,
+                    },
+                    {
+                        name: "tipo_analisis_id",
+                        type: "int",
+                        isNullable: false,
+                    },
+                    {
+                        name: "created_at",
+                        type: "datetime2",
+                        default: "CURRENT_TIMESTAMP",
+                    },
+                    {
+                        name: "updated_at",
+                        type: "datetime2",
+                        default: "CURRENT_TIMESTAMP",
+                        onUpdate: "CURRENT_TIMESTAMP",
+                    },
+                ],
+            }),
+            true
+        );
+
+        await queryRunner.createIndex(
+            "clientes",
+            new TableIndex({
+                name: "IDX_CLIENTES_NAME",
+                columnNames: ["name"],
+            })
+        );
+
+        await queryRunner.createIndex(
+            "servicios",
+            new TableIndex({
+                name: "IDX_SERVICIOS_NAME",
+                columnNames: ["name"],
+            })
+        );
+
+        await queryRunner.createIndex(
+            "audios",
+            new TableIndex({
+                name: "IDX_AUDIOS_TRANSCRITO",
+                columnNames: ["transcrito"],
+            })
+        );
+
+        await queryRunner.createIndex(
+            "data_audios",
+            new TableIndex({
+                name: "IDX_DATA_AUDIOS_COMPOSITE",
+                columnNames: ["audio_id", "clave_id"],
+            })
+        );
+
+        await queryRunner.createIndex(
+            "analisis",
+            new TableIndex({
+                name: "IDX_ANALISIS_COMPOSITE",
+                columnNames: ["parametro_id", "transcripcion_id"],
+            })
+        );
+
+        await queryRunner.createIndex(
+            "parametros_analisis",
+            new TableIndex({
+                name: "IDX_PARAMETROS_ANALISIS_COMPOSITE",
+                columnNames: ["prompt_id", "tipo_analisis_id"],
+            })
+        );
         // Crear clave foránea entre 'audios' y 'servicios'
         await queryRunner.createForeignKey(
             "audios",
@@ -499,19 +579,28 @@ export class CreateDbSpeech1738006025071 implements MigrationInterface {
         await queryRunner.createForeignKey(
             "analisis",
             new TableForeignKey({
-                columnNames: ["tipo_analisis_id"],
+                columnNames: ["parametro_id"],
                 referencedColumnNames: ["id"],
-                referencedTableName: "tipo_analisis",
+                referencedTableName: "parametros_analisis",
                 onDelete: "CASCADE",
             })
         );
 
         await queryRunner.createForeignKey(
-            "analisis",
+            "parametros_analisis",
             new TableForeignKey({
                 columnNames: ["prompt_id"],
                 referencedColumnNames: ["id"],
                 referencedTableName: "prompts",
+                onDelete: "CASCADE",
+            })
+        );
+        await queryRunner.createForeignKey(
+            "parametros_analisis",
+            new TableForeignKey({
+                columnNames: ["tipo_analisis_id"],
+                referencedColumnNames: ["id"],
+                referencedTableName: "tipo_analisis",
                 onDelete: "CASCADE",
             })
         );
@@ -538,112 +627,72 @@ export class CreateDbSpeech1738006025071 implements MigrationInterface {
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        // Eliminar clave foránea en 'data_audios'
-        const tableDataAudios = await queryRunner.getTable("data_audios");
-        const foreignKeyDataAudios = tableDataAudios!.foreignKeys.find(
-            (fk) => fk.columnNames.indexOf("audio_id") !== -1
+        // Eliminar claves foráneas primero
+        await queryRunner.dropForeignKey(
+            "data_analisis",
+            "FK_data_analisis_clave_id"
         );
-        if (foreignKeyDataAudios) {
-            await queryRunner.dropForeignKey(
-                "data_audios",
-                foreignKeyDataAudios
-            );
-        }
-
-        // Eliminar clave foránea en 'transcripciones'
-        const tableTranscripciones = await queryRunner.getTable(
-            "transcripciones"
+        await queryRunner.dropForeignKey(
+            "data_analisis",
+            "FK_data_analisis_analisis_id"
         );
-        const foreignKeyTranscripciones =
-            tableTranscripciones!.foreignKeys.find(
-                (fk) => fk.columnNames.indexOf("audio_id") !== -1
-            );
-        if (foreignKeyTranscripciones) {
-            await queryRunner.dropForeignKey(
-                "transcripciones",
-                foreignKeyTranscripciones
-            );
-        }
-
-        // Eliminar claves foráneas en otras tablas si es necesario (por ejemplo, 'servicios')
-        const tableAudios = await queryRunner.getTable("audios");
-        const foreignKeyAudios = tableAudios!.foreignKeys.find(
-            (fk) => fk.columnNames.indexOf("servicio_id") !== -1
+        await queryRunner.dropForeignKey(
+            "parametros_analisis",
+            "FK_parametros_analisis_prompt_id"
         );
-        if (foreignKeyAudios) {
-            await queryRunner.dropForeignKey("audios", foreignKeyAudios);
-        }
-
-        const tableServicios = await queryRunner.getTable("servicios");
-        const foreignKeyServicios = tableServicios!.foreignKeys.find(
-            (fk) => fk.columnNames.indexOf("cliente_id") !== -1
+        await queryRunner.dropForeignKey(
+            "parametros_analisis",
+            "FK_parametros_analisis_tipo_analisis_id"
         );
-        if (foreignKeyServicios) {
-            await queryRunner.dropForeignKey("servicios", foreignKeyServicios);
-        }
-
-        const tablaDataAnalisis = await queryRunner.getTable("data_analisis");
-        const fkDataAnalisis = tablaDataAnalisis!.foreignKeys.find(
-            (fk) => fk.columnNames.indexOf("analisis_id") !== -1
+        await queryRunner.dropForeignKey(
+            "analisis",
+            "FK_analisis_parametro_id"
+        );
+        await queryRunner.dropForeignKey(
+            "analisis",
+            "FK_analisis_transcripcion_id"
+        );
+        await queryRunner.dropForeignKey(
+            "transcripciones",
+            "FK_transcripciones_audio_id"
+        );
+        await queryRunner.dropForeignKey(
+            "data_audios",
+            "FK_data_audios_audio_id"
+        );
+        await queryRunner.dropForeignKey(
+            "data_audios",
+            "FK_data_audios_clave_id"
+        );
+        await queryRunner.dropForeignKey("audios", "FK_audios_servicio_id");
+        await queryRunner.dropForeignKey(
+            "servicios",
+            "FK_servicios_cliente_id"
         );
 
-        if (fkDataAnalisis) {
-            await queryRunner.dropForeignKey("data_analisis", fkDataAnalisis);
-        }
-
-        const tablaDataAnalisisClave = await queryRunner.getTable(
-            "data_analisis"
+        // Eliminar índices adicionales si es necesario (opcional, si los índices son específicos y no son automáticos)
+        await queryRunner.dropIndex(
+            "parametros_analisis",
+            "IDX_PARAMETROS_ANALISIS_COMPOSITE"
         );
-        const fkDataAnalisisClave = tablaDataAnalisisClave!.foreignKeys.find(
-            (fk) => fk.columnNames.indexOf("clave_id") !== -1
-        );
+        await queryRunner.dropIndex("analisis", "IDX_ANALISIS_COMPOSITE");
+        await queryRunner.dropIndex("data_audios", "IDX_DATA_AUDIOS_COMPOSITE");
+        await queryRunner.dropIndex("audios", "IDX_AUDIOS_TRANSCRITO");
+        await queryRunner.dropIndex("servicios", "IDX_SERVICIOS_NAME");
+        await queryRunner.dropIndex("clientes", "IDX_CLIENTES_NAME");
 
-        if (fkDataAnalisisClave) {
-            await queryRunner.dropForeignKey(
-                "data_analisis",
-                fkDataAnalisisClave
-            );
-        }
-
-        const tablaAnalisis = await queryRunner.getTable("analisis");
-        const fkAnalisisTranscripcion = tablaAnalisis!.foreignKeys.find(
-            (fk) => fk.columnNames.indexOf("transcripcion_id") !== -1
-        );
-
-        if (fkAnalisisTranscripcion) {
-            await queryRunner.dropForeignKey(
-                "analisis",
-                fkAnalisisTranscripcion
-            );
-        }
-
-        const fkAnalisisTipo = tablaAnalisis!.foreignKeys.find(
-            (fk) => fk.columnNames.indexOf("tipo_analisis_id") !== -1
-        );
-
-        if (fkAnalisisTipo) {
-            await queryRunner.dropForeignKey("analisis", fkAnalisisTipo);
-        }
-
-        const fkAnalisisPrompt = tablaAnalisis!.foreignKeys.find(
-            (fk) => fk.columnNames.indexOf("prompt_id") !== -1
-        );
-
-        if (fkAnalisisPrompt) {
-            await queryRunner.dropForeignKey("analisis", fkAnalisisPrompt);
-        }
-
-        // Eliminar tablas en orden inverso a su creación
+        // Eliminar tablas en el orden correcto
+        await queryRunner.dropTable("parametros_analisis");
+        await queryRunner.dropTable("analisis");
+        await queryRunner.dropTable("data_analisis");
+        await queryRunner.dropTable("claves_analisis");
+        await queryRunner.dropTable("prompts");
+        await queryRunner.dropTable("tipo_analisis");
         await queryRunner.dropTable("transcripciones");
         await queryRunner.dropTable("data_audios");
         await queryRunner.dropTable("audios");
         await queryRunner.dropTable("claves_audios");
         await queryRunner.dropTable("servicios");
         await queryRunner.dropTable("clientes");
-        await queryRunner.dropTable("data_analisis");
-        await queryRunner.dropTable("claves_analisis");
-        await queryRunner.dropTable("analisis");
-        await queryRunner.dropTable("tipo_analisis");
-        await queryRunner.dropTable("prompts");
     }
 }

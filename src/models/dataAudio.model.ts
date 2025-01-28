@@ -8,15 +8,12 @@ import {
     JoinColumn,
 } from "typeorm";
 
-import { Audio } from "./audio.model";
+import { Audio, ClaveAudio } from "./index";
 
 @Entity("data_audios")
 export class DataAudio {
     @PrimaryGeneratedColumn()
     id!: number;
-
-    @Column()
-    clave!: string;
 
     @Column()
     valor!: string;
@@ -30,4 +27,10 @@ export class DataAudio {
     @ManyToOne(() => Audio, (audio) => audio.data, { onDelete: "CASCADE" })
     @JoinColumn({ name: "audio_id" })
     audio!: Audio;
+
+    @ManyToOne(() => ClaveAudio, (clave) => clave.data, {
+        onDelete: "CASCADE",
+    })
+    @JoinColumn({ name: "clave_id" })
+    clave!: ClaveAudio;
 }
