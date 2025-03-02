@@ -8,8 +8,9 @@ import {
     OneToOne,
     OneToMany,
     JoinColumn,
+    ManyToOne,
 } from "typeorm";
-import { Audio, TipoAnalisis } from "./index";
+import { Audio, Analisis } from "./index";
 @Entity("transcripciones")
 export class Transcripcion {
     @PrimaryGeneratedColumn()
@@ -31,4 +32,9 @@ export class Transcripcion {
     })
     @JoinColumn({ name: "audio_id" })
     audio!: Audio;
+
+    @OneToMany(() => Analisis, (analisis) => analisis.transcripcion, {
+        onDelete: "CASCADE",
+    })
+    analisis!: Analisis[];
 }

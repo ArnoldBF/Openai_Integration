@@ -16,6 +16,8 @@ import {
     updatePrompt,
 } from "./prompts/prompt.service";
 
+import { ClaveAudioService } from "./audios/claveAudio.service";
+
 export {
     AnalisisProcesoService,
     AudioService,
@@ -28,4 +30,5 @@ export {
     PromptService,
     PromptInterface,
     updatePrompt,
+    ClaveAudioService,
 };

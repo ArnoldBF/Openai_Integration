@@ -1,8 +1,8 @@
 import config from "../config/config";
 export const configEntities = [
     config.nodeEnv === "production"
-        ? "dist/src/models/*.js"
-        : "src/models/*.ts",
+        ? "dist/src/entities/*.js"
+        : "src/entities/*.ts",
 ];
 
 export const configMigrations = [
