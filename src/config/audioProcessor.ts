@@ -5,9 +5,9 @@ import {
     DataAudioService,
     TranscripcionProcesoService,
     TranscripcionService,
+    ClaveAudioService,
 } from "../services/index";
 import { DataExtractorTxt } from "../helpers/dataExtractorTxt";
-import { string } from "joi";
 
 export class AudioProcessor {
     private audioService: AudioService;
@@ -15,19 +15,22 @@ export class AudioProcessor {
     private transcripcionProcesoService: TranscripcionProcesoService;
     private dataExtractor: DataExtractorTxt;
     private transcripcionService: TranscripcionService;
+    private claveAudioService: ClaveAudioService;
 
     constructor(
         audioService: AudioService,
         dataAudioService: DataAudioService,
         transcripcionProcesoService: TranscripcionProcesoService,
         dataExtractor: DataExtractorTxt,
-        transcripcionService: TranscripcionService
+        transcripcionService: TranscripcionService,
+        claveAudioService: ClaveAudioService
     ) {
         this.audioService = audioService;
         this.dataAudioService = dataAudioService;
         this.transcripcionProcesoService = transcripcionProcesoService;
         this.dataExtractor = dataExtractor;
         this.transcripcionService = transcripcionService;
+        this.claveAudioService = claveAudioService;
     }
 
     public async procesarArchivo(
@@ -77,12 +80,16 @@ export class AudioProcessor {
                 );
 
                 for (const data of registroData) {
-                    const dataAudio: DataAudioInterface = {
-                        audio: data.audio,
-                        // clave: data.clave,
-                        valor: data.valor,
-                    };
-                    await this.dataAudioService.createDataAudio(dataAudio);
+                    const claveAudio =
+                        await this.claveAudioService.getClaveById(data.clave);
+                    if (claveAudio?.clave === data.clave) {
+                        const dataAudio: DataAudioInterface = {
+                            audio: data.audio,
+                            clave: claveAudio,
+                            valor: data.valor,
+                        };
+                        await this.dataAudioService.createDataAudio(dataAudio);
+                    }
                 }
             }
             const transcripcion = await this.reintentarTranscripcion(

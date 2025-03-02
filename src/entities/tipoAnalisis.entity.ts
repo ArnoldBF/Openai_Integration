@@ -6,9 +6,10 @@ import {
     UpdateDateColumn,
     ManyToOne,
     JoinColumn,
+    OneToMany,
 } from "typeorm";
 
-import { Transcripcion } from "./index";
+import { Parametro } from "./index";
 
 @Entity("tipo_analisis")
 export class TipoAnalisis {
@@ -24,13 +25,8 @@ export class TipoAnalisis {
     @UpdateDateColumn({ type: "datetime2", default: () => "CURRENT_TIMESTAMP" })
     updated_at!: Date;
 
-    // @ManyToOne(
-    //     () => Transcripcion,
-    //     (transcripcion) => transcripcion.tipo_analisis,
-    //     {
-    //         onDelete: "CASCADE",
-    //     }
-    // )
-    // @JoinColumn({ name: "id_transcripcion" })
-    // transcripcion!: Transcripcion;
+    @OneToMany(() => Parametro, (parametros) => parametros.tipo, {
+        onDelete: "CASCADE",
+    })
+    parametro!: Parametro[];
 }

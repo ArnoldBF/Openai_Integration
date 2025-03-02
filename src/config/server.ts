@@ -6,6 +6,7 @@ import {
     TranscripcionProcesoService,
     TranscripcionService,
     openAI,
+    ClaveAudioService,
 } from "../services/index";
 import { DataExtractorTxt } from "../helpers/dataExtractorTxt";
 import { promptRouter } from "../routes/index";
@@ -37,13 +38,15 @@ class Server {
         const transcripcionProcesoService = new TranscripcionProcesoService(
             openAI
         );
+        const claveAudioService = new ClaveAudioService();
 
         const audioProcessor = new AudioProcessor(
             audioService,
             dataAudioService,
             transcripcionProcesoService,
             dataExtractor,
-            transcripcionService
+            transcripcionService,
+            claveAudioService
         );
 
         this.fileManeger = new FileManager(

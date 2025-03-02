@@ -1,5 +1,5 @@
 import { AppDataSource } from "../../config/typeOrm";
-import { Audio } from "../../models/index";
+import { Audio } from "../../entities/index";
 import boom from "@hapi/boom";
 
 export interface AudioInterface {

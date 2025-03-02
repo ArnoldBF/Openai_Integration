@@ -1,5 +1,5 @@
 import { AppDataSource } from "../../config/typeOrm";
-import { Prompt } from "../../models/index";
+import { Prompt } from "../../entities/index";
 import boom from "@hapi/boom";
 
 export interface PromptInterface {

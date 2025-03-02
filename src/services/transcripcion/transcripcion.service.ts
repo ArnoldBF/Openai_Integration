@@ -1,5 +1,5 @@
 import { AppDataSource } from "../../config/typeOrm";
-import { Transcripcion, Audio } from "../../models/index";
+import { Transcripcion, Audio } from "../../entities/index";
 
 import boom from "@hapi/boom";
 
