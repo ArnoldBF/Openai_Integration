@@ -25,7 +25,7 @@ export class AnalisisProcesoService {
 
 /////Ejemplo de uso
 const openAI = new OpenAIAdapter(
-    "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"
+    "sk-proj-DzNxIGXiV30XFLAHTTB3-u2lw1qAdDok7EEasPBwAv_wDLwGRNgp1xFifw4cRgbZ3T3BlbkFJtE"
 );
 const promptTemplate = new PromptTemplateAdapter(
     `
