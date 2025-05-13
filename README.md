@@ -1,2 +1,2 @@
 ## speech_IA
-Development of an AI-driven Speech Analytics system designed to analyze transcripts of real-time or delayed recordings. The project focuses on evaluating the quality of customer service, identifying keywords related to sales, dates, collections and relevant information, and generating insights that optimize business decision making
+Development of an AI-integrated system designed to analyze and extract insights from structured and unstructured data. The project focuses on evaluating key information, identifying relevant patterns such as dates, keywords, and transactional data, and generating actionable insights to support and optimize business decision-making.
