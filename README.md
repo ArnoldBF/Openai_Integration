@@ -1,6 +1,6 @@
 # OpenAI Integration
 
-Sistema avanzado para el análisis y procesamiento de audios y textos, integrando inteligencia artificial (OpenAI) para transcribir, analizar y extraer información clave de grabaciones de llamadas y conversaciones. Su objetivo es identificar patrones relevantes (fechas, palabras clave, datos transaccionales, etc.) y generar insights accionables para la toma de decisiones empresariales.
+Solución backend modular para el procesamiento inteligente de audios y textos, que integra modelos avanzados de inteligencia artificial (OpenAI) para la transcripción automática, análisis semántico y extracción de información relevante a partir de grabaciones de llamadas y conversaciones. Permite identificar patrones críticos —como fechas, entidades, palabras clave y datos transaccionales— y transformar grandes volúmenes de datos no estructurados en insights accionables, todo a través de una API REST robusta y extensible.
 
 ---
 
