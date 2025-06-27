@@ -1,4 +1,3 @@
-import internal from "stream";
 import { AppDataSource } from "../../config/typeOrm";
 import { DataAudio, Audio, ClaveAudio } from "../../entities/index";
 
@@ -7,7 +6,7 @@ import boom from "@hapi/boom";
 export interface DataAudioInterface {
     audio: Audio;
     clave: ClaveAudio;
-    valor?: string;
+    valor: string;
 }
 
 export class DataAudioService {

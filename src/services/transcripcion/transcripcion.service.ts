@@ -1,13 +1,8 @@
 import { AppDataSource } from "../../config/typeOrm";
-import { Transcripcion, Audio } from "../../entities/index";
+import { Transcripcion, Audio } from "../../entities";
+import { ITranscripcionCreate } from "../../interfaces/ITranscripcionCreate";
 
 import boom from "@hapi/boom";
-
-interface TranscripcionInterface {
-    audio: Audio;
-    transcripcion?: string;
-    fileName?: string;
-}
 
 export class TranscripcionService {
     private transcripcionRepository =
@@ -17,7 +12,7 @@ export class TranscripcionService {
     constructor() {}
 
     public async createTranscripcion(
-        data: TranscripcionInterface
+        data: ITranscripcionCreate
     ): Promise<Transcripcion> {
         const audio = await this.audioRepository.findOneBy({
             id: data.audio.id,

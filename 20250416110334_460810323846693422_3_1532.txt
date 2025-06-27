@@ -1,0 +1,14 @@
+Fecha=20250416
+Hora=110334
+Nodo=03
+Canal=1532
+Segundos=86
+EntraSale=S
+NroLinea=5671
+NroRemoto=76610670
+LinkId=460810323846693422
+IDLinea=1151
+Campaña=1151
+Cliente=1000
+Dato1=MO-60676906
+Dato2=1. RV

@@ -9,7 +9,7 @@ import {
     JoinColumn,
 } from "typeorm";
 import { DataAnalisis } from "./index";
-@Entity("clave_analisis")
+@Entity("claves_analisis")
 export class ClaveAnalisis {
     @PrimaryGeneratedColumn()
     id!: number;

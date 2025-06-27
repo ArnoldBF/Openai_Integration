@@ -1,21 +1,20 @@
 import { AppDataSource } from "../../config/typeOrm";
-import { Audio } from "../../entities/index";
+import { Audio, Servicio } from "../../entities/index";
+import { IAudioCreate } from "../../interfaces/IAudioCreate";
+import { IAudioUpdate } from "../../interfaces/IAudioUpdate";
 import boom from "@hapi/boom";
-
-export interface AudioInterface {
-    fileName?: string;
-    cliente?: string;
-    transcrito?: number;
-}
-
-interface updateAudio {
-    transcrito?: number;
-}
 
 export class AudioService {
     private audioRepository = AppDataSource.getRepository(Audio);
+    private servicioRepository = AppDataSource.getRepository(Servicio);
     constructor() {}
-    public async createAudio(data: AudioInterface): Promise<Audio> {
+    public async createAudio(data: IAudioCreate): Promise<Audio> {
+        const servicio = await this.servicioRepository.findOneBy({
+            id: data.servicio.id,
+        });
+        if (!servicio) {
+            throw boom.badRequest("Servicio not found");
+        }
         const audio = this.audioRepository.create(data);
         return await this.audioRepository.save(audio);
     }
@@ -39,14 +38,9 @@ export class AudioService {
     }
     async updateAudio(
         id: number,
-        audio: updateAudio
+        audio: IAudioUpdate
     ): Promise<Partial<Audio | null>> {
         await this.audioRepository.update(id, audio);
         return await this.audioRepository.findOneBy({ id });
     }
-
-    // async deleteAudio(id: number) {
-    //     await this.audioRepository.delete(id);
-    //     return { id };
-    // }
 }

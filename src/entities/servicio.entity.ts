@@ -10,7 +10,7 @@ import {
 } from "typeorm";
 
 import { Cliente, Audio } from "./index";
-@Entity("clientes")
+@Entity("servicios")
 export class Servicio {
     @PrimaryGeneratedColumn()
     id!: number;

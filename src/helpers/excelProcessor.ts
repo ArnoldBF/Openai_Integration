@@ -29,6 +29,6 @@ export class ExcelProcessor {
     }
 }
 
-// const excelProcessor = new ExcelProcessor("prueba1.xlsx");
+const excelProcessor = new ExcelProcessor("prueba1.xlsx");
 
-// console.log(excelProcessor.processFile());
+console.log(excelProcessor.processFile());

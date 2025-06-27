@@ -11,7 +11,7 @@ export const AppDataSource = new DataSource({
     password: config.dbPassword,
     database: config.dbName,
     synchronize: false,
-    logging: true,
+    logging: false,
     entities: configEntities,
     migrations: configMigrations,
     subscribers: [],
@@ -29,8 +29,8 @@ export async function connectDatabase() {
             "Entities:",
             AppDataSource.entityMetadatas.map((e) => e.name)
         );
-        await AppDataSource.runMigrations();
-        console.log("Migrations have been run!");
+        //await AppDataSource.runMigrations();
+        // console.log("Migrations have been run!");
     } catch (err) {
         console.error("Error during Data Source initialization", err);
     }

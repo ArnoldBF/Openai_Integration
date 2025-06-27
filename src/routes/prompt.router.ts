@@ -13,9 +13,13 @@ import {
 
 const router = Router();
 
-router.get("/", getPromptsAll);
+router.get("/all", getPromptsAll);
 router.get("/:id", getPrompt);
-router.post("/", validatorHandler(createPromptSchema, "body"), createPrompt);
+router.post(
+    "/crear",
+    validatorHandler(createPromptSchema, "body"),
+    createPrompt
+);
 router.put(
     "/:id",
     validatorHandler(updatePromptSchema, "body"),

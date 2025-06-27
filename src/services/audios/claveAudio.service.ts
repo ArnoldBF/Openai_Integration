@@ -24,4 +24,8 @@ export class ClaveAudioService {
         const claveAudio = await this.claveAudioRepository.findOneBy({ clave });
         return claveAudio;
     }
+
+    public async getAllClavesAudio(): Promise<ClaveAudio[]> {
+        return await this.claveAudioRepository.find();
+    }
 }

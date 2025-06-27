@@ -12,6 +12,11 @@ import {
 } from "typeorm";
 
 import { DataAudio, Transcripcion, Servicio } from "./index";
+
+enum estadoTranscrito {
+    pendiente,
+    completado,
+}
 @Entity("audios")
 export class Audio {
     @PrimaryGeneratedColumn()

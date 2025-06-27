@@ -1,15 +1,20 @@
 import express, { Application } from "express";
-import { FileManager, AudioProcessor, connectDatabase, config } from "./index";
+import { connectDatabase, config } from "./index";
+import { ExpressAdapter } from "@bull-board/express";
+import { createBullBoard } from "@bull-board/api";
+import { BullMQAdapter } from "@bull-board/api/bullMQAdapter";
+import { analisisQueue } from "../queues/analisis.queue";
+
 import {
-    AudioService,
-    DataAudioService,
-    TranscripcionProcesoService,
-    TranscripcionService,
-    openAI,
-    ClaveAudioService,
-} from "../services/index";
-import { DataExtractorTxt } from "../helpers/dataExtractorTxt";
-import { promptRouter } from "../routes/index";
+    promptRouter,
+    tipoAnalisisRouter,
+    parametrosAnalisisRouter,
+    claveAnalisisRouter,
+    servicioRouter,
+    clienteRouter,
+    colaAnalisisRouter,
+    claveAudioRouter,
+} from "../routes";
 import {
     logErrors,
     errorHandler,
@@ -18,48 +23,37 @@ import {
 } from "../middlewares/error.handler";
 
 import cors from "cors";
-// import "../utils/auth";
-// import { setupSwagger } from "../documentation/swaggerConfig";
 
 class Server {
     public app: Application;
     public port: number;
     public paths: { [key: string]: string };
-    public fileManeger: FileManager;
+    // private fileManeger: FileManager;
     constructor() {
         this.app = express();
         this.port = config.port;
-
-        // Inyectar dependencias en AudioProcessor y FileManeger
-        const audioService = new AudioService();
-        const dataAudioService = new DataAudioService();
-        const dataExtractor = new DataExtractorTxt();
-        const transcripcionService = new TranscripcionService();
-        const transcripcionProcesoService = new TranscripcionProcesoService(
-            openAI
-        );
-        const claveAudioService = new ClaveAudioService();
-
-        const audioProcessor = new AudioProcessor(
-            audioService,
-            dataAudioService,
-            transcripcionProcesoService,
-            dataExtractor,
-            transcripcionService,
-            claveAudioService
-        );
-
-        this.fileManeger = new FileManager(
-            "C:\\Users\\a.bazan\\Music\\prueba1",
-            audioProcessor
-        );
 
         this.paths = {
             users: "/api/users",
             persons: "/api/persons",
             auth: "/api/auth",
             prompts: "/api/prompts",
+            tipoAnalisis: "/api/tipo-analisis",
+            parametrosAnalisis: "/api/parametros-analisis",
+            claveAnalisis: "/api/clave-analisis",
+            servicio: "/api/servicios",
+            cliente: "/api/clientes",
+            colaAnalisis: "/api/cola-analisis",
+            claveAudio: "/api/clave-audio",
         };
+
+        const serverAdapter = new ExpressAdapter();
+        serverAdapter.setBasePath("/admin/queues");
+        createBullBoard({
+            queues: [new BullMQAdapter(analisisQueue)],
+            serverAdapter,
+        });
+        this.app.use("/admin/queues", serverAdapter.getRouter());
 
         this.middlewares();
         this.dbConection();
@@ -74,7 +68,6 @@ class Server {
 
     private async dbConection() {
         await connectDatabase();
-        // await this.fileManeger.procesarArchivos(10);
     }
 
     private routes() {
@@ -83,22 +76,22 @@ class Server {
         // this.app.use(this.paths.auth, authRouter);
 
         this.app.use(this.paths.prompts, promptRouter);
+        this.app.use(this.paths.tipoAnalisis, tipoAnalisisRouter);
+        this.app.use(this.paths.parametrosAnalisis, parametrosAnalisisRouter);
+        this.app.use(this.paths.claveAnalisis, claveAnalisisRouter);
+        this.app.use(this.paths.servicio, servicioRouter);
+        this.app.use(this.paths.cliente, clienteRouter);
+        this.app.use(this.paths.colaAnalisis, colaAnalisisRouter);
+        this.app.use(this.paths.claveAudio, claveAudioRouter);
         this.app.use(logErrors);
         this.app.use(boomErrorHandler);
         this.app.use(uniqueConstraintErrorHandler);
         this.app.use(errorHandler);
     }
 
-    // private setupSwagger() {
-    //     setupSwagger(this.app);
-    // }
-
     public listen() {
         this.app.listen(this.port, () => {
             console.log(`Server running on port ${this.port}`);
-            // console.log(
-            //     `API documentation available at http://localhost:${this.port}/api-docs`
-            // );
         });
     }
 }

@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
-import { PromptService } from "../services/index";
+import { PromptService } from "../services";
 
 export async function createPrompt(
     req: Request,
@@ -23,7 +23,7 @@ export async function getPromptsAll(
 ) {
     try {
         const promptService = new PromptService();
-        const prompts = await promptService.getPrompts();
+        const prompts = await promptService.getPromptsAllEndPoint();
         res.status(200).json(prompts);
     } catch (error) {
         next(error);
@@ -38,7 +38,9 @@ export async function getPrompt(
     try {
         const { id } = req.params;
         const promptService = new PromptService();
-        const prompt = await promptService.getPrompt(id as unknown as number);
+        const prompt = await promptService.getPromptByIdEndpoint(
+            id as unknown as number
+        );
         res.status(200).json(prompt);
     } catch (error) {
         next(error);

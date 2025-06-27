@@ -438,6 +438,56 @@ export class CreateDbSpeech1738006025071 implements MigrationInterface {
                         generationStrategy: "increment",
                     },
                     {
+                        name: "campo_1",
+                        type: "varchar",
+                        isNullable: false,
+                    },
+                    {
+                        name: "campo_2",
+                        type: "varchar",
+                        isNullable: false,
+                    },
+                    {
+                        name: "campo_3",
+                        type: "varchar",
+                        isNullable: false,
+                    },
+                    {
+                        name: "campo_4",
+                        type: "varchar",
+                        isNullable: true,
+                    },
+                    {
+                        name: "campo_5",
+                        type: "varchar",
+                        isNullable: true,
+                    },
+                    {
+                        name: "campo_6",
+                        type: "varchar",
+                        isNullable: true,
+                    },
+                    {
+                        name: "campo_7",
+                        type: "varchar",
+                        isNullable: true,
+                    },
+                    {
+                        name: "campo_8",
+                        type: "varchar",
+                        isNullable: true,
+                    },
+                    {
+                        name: "campo_9",
+                        type: "varchar",
+                        isNullable: true,
+                    },
+                    {
+                        name: "campo_10",
+                        type: "varchar",
+                        isNullable: true,
+                    },
+                    {
                         name: "prompt_id",
                         type: "int",
                         isNullable: false,

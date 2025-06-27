@@ -1,8 +1,6 @@
-import { IOpenAITranscribir } from "../../interfaces/IOpenAI";
-import { OpenAIAdapterWhisper } from "../../adapters/openAIWhisper.apadapter";
-import config from "../../config/config";
+import { IOpenAITranscribir } from "../interfaces/IOpenAI";
 
-export class TranscripcionProcesoService {
+export class TranscripcionUseCase {
     private openAI: IOpenAITranscribir;
 
     constructor(openAI: IOpenAITranscribir) {
@@ -13,8 +11,6 @@ export class TranscripcionProcesoService {
         return this.openAI.transcribe(filePath);
     }
 }
-
-export const openAI = new OpenAIAdapterWhisper(config.apiKeyOpenAi);
 
 // const transcripcionService = new TranscripcionProcesoService(openAI);
 
