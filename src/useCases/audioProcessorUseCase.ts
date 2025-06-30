@@ -100,9 +100,9 @@ export class AudioProcessor {
                 ),
             ]);
 
-            if (audioExiste) {
+            if (audioExiste && audioExiste.transcrito === 1) {
                 mensajes.push(
-                    `Audio ya existe en la base de datos: ${path.basename(
+                    `Audio ya existe y ya esta trasncrito en la base de datos: ${path.basename(
                         archivoAudio
                     )}`
                 );
@@ -118,12 +118,16 @@ export class AudioProcessor {
                 // console.log(mensajes.join("\n"));
                 return mensajes;
             }
+            let audio = audioExiste;
 
-            const audio = await this.procesarAudios(
-                audioData,
-                datos,
-                archivoTexto
-            );
+            if (!audio) {
+                audio = await this.procesarAudios(
+                    audioData,
+                    datos,
+                    archivoTexto
+                );
+            }
+
             const transcripcion = await this.reintentarTranscripcion(
                 archivoAudio
             );
@@ -133,6 +137,8 @@ export class AudioProcessor {
                     transcripcion,
                     fileName: path.basename(archivoAudio),
                 });
+
+            // console.log(transcripcion);
 
             await this.audioService.updateAudio(audio.id, { transcrito: 1 });
             // const tipoAnalisis =
