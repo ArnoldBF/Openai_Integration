@@ -23,7 +23,7 @@ export class AudioService {
         return await this.audioRepository.find({ relations: ["data"] });
     }
 
-    async getAudio(fileName: string): Promise<Partial<Audio>> {
+    async getAudio(fileName: string): Promise<Audio> {
         const audio = await this.audioRepository.findOneBy({ fileName });
         if (!audio) {
             throw boom.badRequest("Audio not found");
@@ -31,18 +31,20 @@ export class AudioService {
 
         return audio;
     }
-    async getAudioProcessor(fileName: string): Promise<Partial<Audio> | null> {
+    async getAudioProcessor(fileName: string): Promise<Audio | null> {
         const audio = await this.audioRepository.findOneBy({
             fileName,
-            transcrito: 1,
         });
 
         return audio;
     }
     async updateAudio(
-        id: number,
+        id: number | undefined,
         audio: IAudioUpdate
-    ): Promise<Partial<Audio | null>> {
+    ): Promise<Audio | null> {
+        if (!id) {
+            throw boom.badRequest("ID is required");
+        }
         await this.audioRepository.update(id, audio);
         return await this.audioRepository.findOneBy({ id });
     }
