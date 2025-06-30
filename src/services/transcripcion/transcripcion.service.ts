@@ -14,9 +14,11 @@ export class TranscripcionService {
     public async createTranscripcion(
         data: ITranscripcionCreate
     ): Promise<Transcripcion> {
+        
         const audio = await this.audioRepository.findOneBy({
             id: data.audio.id,
         });
+
         if (!audio) {
             throw boom.badRequest("Audio not found");
         }
