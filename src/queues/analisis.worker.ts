@@ -27,6 +27,8 @@ async function startWorker() {
                 port: 6379,
             },
             concurrency: 2,
+            lockDuration: 12600000, // 3.5 horas en milisegundos
+
         }
     );
 
