@@ -15,6 +15,8 @@ const config = {
     passMail: process.env.USER_PASS,
     urlFront: process.env.URL_FRONT,
     apiKeyOpenAi: process.env.API_KEY_1 || "",
+    rutaOrigen: process.env.REPO_ORIGEN || "",
+    rutaDestino: process.env.REPO_DESTINO || "",
 };
 
 export default config;

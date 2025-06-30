@@ -1,4 +1,5 @@
 export interface IParametroCreate {
+    name: string;
     promptId: number;
     tipoId: number;
     campo_1: string;

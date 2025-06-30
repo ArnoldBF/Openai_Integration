@@ -13,6 +13,7 @@ import {
     DataAnalisisService,
 } from "../services";
 import { DataExtractorTxt } from "../helpers/dataExtractorTxt";
+import { extraerMetadataAudio } from "../helpers/audioMetadataExtractor";
 
 import { TranscripcionUseCase } from "./transcripcionUseCase";
 import { AnalisisUseCase } from "../useCases/analisisUseCase";
@@ -20,6 +21,7 @@ import { IAudioCreate } from "../interfaces/IAudioCreate";
 import { IAnalisisCreate } from "../interfaces/IAnalisisCreate";
 
 import { Parametro } from "../entities/parametros.entity";
+import path from "path";
 
 export class AudioProcessor {
     private audioService: AudioService;
@@ -69,12 +71,12 @@ export class AudioProcessor {
         parametroAnalisis: Parametro,
         archivoAudio: string,
         archivoTexto?: string
-    ): Promise<void> {
+    ): Promise<string[] | void> {
         await this.validarExistenciaArchivos(archivoAudio, archivoTexto);
 
         const datos = archivoTexto
             ? await this.dataExtractor.extraerDatos(archivoTexto)
-            : {};
+            : await extraerMetadataAudio(archivoAudio);
 
         const servicio = await this.servicioService.getServicioById(
             servicioSeleccionado
@@ -82,30 +84,39 @@ export class AudioProcessor {
 
         const audioData = {
             servicio: servicio,
-            fileName: archivoAudio,
+            fileName: path.basename(archivoAudio),
             // cliente: datos.cliente,
             transcrito: 0,
         };
+        console.log(path.basename(archivoAudio));
         try {
             let mensajes: string[] = [];
             const [audioExiste, transcripcionExiste] = await Promise.all([
-                this.audioService.getAudioProcessor(archivoAudio),
+                this.audioService.getAudioProcessor(
+                    path.basename(archivoAudio)
+                ),
                 this.transcripcionService.getTranscripcionProcessor(
-                    archivoAudio
+                    path.basename(archivoAudio)
                 ),
             ]);
 
             if (audioExiste) {
                 mensajes.push(
-                    `Audio ya existe en la base de datos: ${archivoAudio}`
+                    `Audio ya existe en la base de datos: ${path.basename(
+                        archivoAudio
+                    )}`
                 );
             }
             if (transcripcionExiste) {
-                mensajes.push(`Transcripcion ya existe para ${archivoAudio}`);
+                mensajes.push(
+                    `Transcripcion ya existe para ${path.basename(
+                        archivoAudio
+                    )}`
+                );
             }
             if (mensajes.length) {
-                console.log(mensajes.join("\n"));
-                return;
+                // console.log(mensajes.join("\n"));
+                return mensajes;
             }
 
             const audio = await this.procesarAudios(
@@ -120,7 +131,7 @@ export class AudioProcessor {
                 await this.transcripcionService.createTranscripcion({
                     audio,
                     transcripcion,
-                    fileName: archivoAudio,
+                    fileName: path.basename(archivoAudio),
                 });
 
             await this.audioService.updateAudio(audio.id, { transcrito: 1 });
@@ -130,7 +141,7 @@ export class AudioProcessor {
             //     );
 
             const variables = {
-                contexto: parametroAnalisis.tipo.name, // consulta para traer el tipo de analisis
+                contexto: parametroAnalisis.tipo.description, // consulta para traer el tipo de analisis
                 transcripcion: transcripcionData.transcripcion, // consulta para traer la transcirpcion
                 parametrosAnalisis: arregloParametros,
                 formatoRespuesta: "JSON",
@@ -172,10 +183,22 @@ export class AudioProcessor {
             console.log(
                 `Registro de audio creado para el archivo ${archivoAudio}`
             );
-            console.log(
-                `Transcripcion del audio ${archivoAudio}: ${transcripcion}`
-            );
+            // console.log(
+            //     `Transcripcion del audio ${archivoAudio}: ${transcripcion}`
+            // );
+            return [];
         } catch (error: any) {
+            if (
+                error.code == "EREQUEST" &&
+                error.message &&
+                error.message.includes("Violation of UNIQUE KEY constraint")
+            ) {
+                return [
+                    `Audio ya existe en la base de datos (por clave unica):${path.basename(
+                        archivoAudio
+                    )}`,
+                ];
+            }
             console.error(`Error procesando ${archivoAudio}: ${error.message}`);
             console.error(error.stack);
         }

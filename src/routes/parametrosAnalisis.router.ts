@@ -9,6 +9,6 @@ const router = Router();
 
 router.post("/crear", createParametroAnalisis);
 
-router.get("/", getParametrosAnalisisAll);
+router.get("/all", getParametrosAnalisisAll);
 
 export default router;

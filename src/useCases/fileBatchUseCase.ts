@@ -16,19 +16,30 @@ export class FileBatchProcessor {
 
         arregloParametros: (string | undefined)[],
         parametroAnalisis: any
-    ) {
+    ): Promise<{ procesados: number; existentes: string[] }> {
+        let procesados = 0;
+        const existentes: string[] = [];
+
         await Promise.all(
-            lote.map(({ texto, audio }) =>
-                this.audioProcessor.procesarArchivo(
+            lote.map(async ({ texto, audio }) => {
+                const mensajes = await this.audioProcessor.procesarArchivo(
                     servicioSeleccionado,
 
                     arregloParametros,
                     parametroAnalisis,
                     path.join(this.rutaCarpeta, audio),
                     path.join(this.rutaCarpeta, texto)
-                )
-            )
+                );
+
+                if (mensajes && mensajes.length) {
+                    existentes.push(...mensajes);
+                } else {
+                    procesados++;
+                }
+            })
         );
+
+        return { procesados, existentes };
     }
 
     async procesarArchivosSinParejaLote(
@@ -37,16 +48,25 @@ export class FileBatchProcessor {
 
         arregloParametros: (string | undefined)[],
         parametroAnalisis: any
-    ) {
+    ): Promise<{ procesados: number; existentes: string[] }> {
+        let procesados = 0;
+        const existentes: string[] = [];
         await Promise.all(
-            lote.map((audio) =>
-                this.audioProcessor.procesarArchivo(
+            lote.map(async (audio) => {
+                const mensajes = await this.audioProcessor.procesarArchivo(
                     servicioSeleccionado,
                     arregloParametros,
                     parametroAnalisis,
                     path.join(this.rutaCarpeta, audio)
-                )
-            )
+                );
+                if (mensajes && mensajes.length) {
+                    existentes.push(...mensajes);
+                } else {
+                    procesados++;
+                }
+            })
         );
+
+        return { procesados, existentes };
     }
 }

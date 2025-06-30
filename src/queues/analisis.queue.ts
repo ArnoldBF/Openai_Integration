@@ -5,4 +5,5 @@ export const analisisQueue = new Queue("analisis", {
         host: "localhost",
         port: 6379,
     },
+    
 });
