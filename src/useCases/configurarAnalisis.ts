@@ -9,6 +9,8 @@ import { AnalisisUseCase } from "../useCases/analisisUseCase";
 import { OpenAIAdapter } from "../adapters/openAILangChain.adapter";
 import { PromptTemplateAdapter } from "../adapters/promptTemplate.adapter";
 
+import { moverArchivos } from "../helpers/buscarArchivos";
+
 import {
     AudioService,
     DataAudioService,
@@ -41,7 +43,7 @@ export async function configurarAnalisis(
     parametrosAnalisis: number,
     servicio: number,
     filtroArchivos: string[]
-) {
+): Promise<{}> {
     const parametroAnalisisService = new ParametroAnalisisService();
     const parametrosAnalisisObjeto =
         await parametroAnalisisService.getParametroById(parametrosAnalisis);
@@ -85,6 +87,25 @@ export async function configurarAnalisis(
         "formatoRespuesta",
     ]);
 
+    const resultadoMover = await moverArchivos(
+        config.rutaOrigen,
+        config.rutaDestino,
+        filtroArchivos
+    );
+
+    if (resultadoMover.errores.length > 0) {
+        console.warn(
+            "Algunos archivos no se movieron correctamente:",
+            resultadoMover.errores
+        );
+
+        if (resultadoMover.errores.length === 0) {
+            throw boom.badRequest(
+                "No se puedo mover ningun archivo. Proceso abortado."
+            );
+        }
+    }
+
     const transcripcionUseCase = new TranscripcionUseCase(openAIWhisper);
     const analisisUseCase = new AnalisisUseCase(openAI, promptTemplate);
 
@@ -104,20 +125,23 @@ export async function configurarAnalisis(
     );
 
     const fileBatchProcessor = new FileBatchProcessor(
-        "C:\\Users\\a.bazan\\Music\\prueba1",
+        config.rutaDestino,
         audioProcessor
     );
 
-    const fileManeger = new FileManager(
-        "C:\\Users\\a.bazan\\Music\\prueba1",
-        fileBatchProcessor
-    );
+    const fileManeger = new FileManager(config.rutaDestino, fileBatchProcessor);
 
-    fileManeger.procesarArchivos(
+    const resultado = await fileManeger.procesarArchivos(
         500,
         servicio,
         arregloParametros,
         parametrosAnalisisObjeto,
         filtroArchivos
     );
+
+    return {
+        archivosMovidos: resultadoMover.movidos,
+        erroresMovimiento: resultadoMover.errores,
+        resultadoProcesamiento: resultado,
+    };
 }

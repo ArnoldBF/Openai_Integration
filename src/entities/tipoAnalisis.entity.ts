@@ -19,6 +19,9 @@ export class TipoAnalisis {
     @Column()
     name!: string;
 
+    @Column()
+    description!: string;
+
     @CreateDateColumn({ type: "datetime2", default: () => "CURRENT_TIMESTAMP" })
     created_at!: Date;
 

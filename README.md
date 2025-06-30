@@ -94,12 +94,48 @@ Solución backend modular y robusta para el procesamiento batch de audios y text
 
 ## 📡 Endpoints principales
 
--   `GET /api/prompts`: Lista todos los prompts.
--   `GET /api/prompts/:id`: Obtiene un prompt por ID.
--   `POST /api/prompts`: Crea un nuevo prompt.
--   `PUT /api/prompts/:id`: Actualiza un prompt existente.
--   `POST /api/cola/batch`: Encola un procesamiento batch de archivos.
--   `GET /api/cola/status`: Consulta el estado de la cola batch.
+### Prompts
+
+-   `POST /api/prompts/crear` — Crear un nuevo prompt
+-   `GET /api/prompts/all` — Listar todos los prompts
+-   `GET /api/prompts/:id` — Obtener un prompt por ID
+-   `PUT /api/prompts/:id` — Actualizar un prompt existente
+
+### Tipo de Análisis
+
+-   `POST /api/tipo-analisis/crear` — Crear tipo de análisis
+-   `GET /api/tipo-analisis/all` — Listar tipos de análisis
+
+### Parámetros de Análisis
+
+-   `POST /api/parametros-analisis/crear` — Crear parámetro de análisis
+-   `GET /api/parametros-analisis/` — Listar parámetros de análisis
+
+### Clave de Análisis
+
+-   `POST /api/clave-analisis/crear` — Crear clave de análisis
+-   `GET /api/clave-analisis/all` — Listar claves de análisis
+
+### Servicio
+
+-   `POST /api/servicios/crear` — Crear servicio
+-   `GET /api/servicios/all` — Listar servicios
+
+### Cliente
+
+-   `POST /api/clientes/crear` — Crear cliente
+
+### Clave de Audio
+
+-   `POST /api/clave-audio/crear` — Crear clave de audio
+-   `GET /api/clave-audio/all` — Listar claves de audio
+
+### Cola de Análisis (Batch)
+
+-   `POST /api/cola-analisis/crear` — Encolar procesamiento batch
+-   `GET /api/cola-analisis/estado` — Estado de la cola batch
+
+---
 
 ### Ejemplos de uso de endpoints
 
@@ -108,7 +144,7 @@ Solución backend modular y robusta para el procesamiento batch de audios y text
 **Request:**
 
 ```http
-POST /api/prompts
+POST /api/prompts/crear
 Content-Type: application/json
 {
   "name": "Análisis de ventas",
@@ -131,7 +167,7 @@ Content-Type: application/json
 **Request:**
 
 ```http
-POST /api/cola/batch
+POST /api/cola-analisis/crear
 Content-Type: application/json
 {
   "servicio": 1,
@@ -144,8 +180,7 @@ Content-Type: application/json
 
 ```json
 {
-    "message": "Lote encolado correctamente",
-    "jobId": "1723456789012-1"
+    "message": "Análisis en cola para procesamiento"
 }
 ```
 
@@ -154,61 +189,17 @@ Content-Type: application/json
 **Request:**
 
 ```http
-GET /api/cola/status
+GET /api/cola-analisis/estado
 ```
 
 **Response:**
 
 ```json
 {
-    "waiting": 0,
-    "active": 1,
-    "completed": 5,
-    "failed": 0
-}
-```
-
-#### 4. Obtener resultado de análisis de un audio
-
-**Request:**
-
-```http
-GET /api/audios/460810323846693422/analisis
-```
-
-**Response:**
-
-```json
-{
-  "audioId": "460810323846693422",
-  "analisis": {
-    "FECHA": "16/04/2025",
-    "HORA": "11:03:34",
-    "CLIENTE": "1000",
-    "CAMPANA": "1151",
-    ...
-  }
-}
-```
-
-#### 5. Ejemplo de entrada de archivo `.txt` procesado
-
-```
-Fecha=20250416
-Hora=110334
-Cliente=1000
-Campaña=1151
-...
-```
-
-#### 6. Ejemplo de salida normalizada en base de datos
-
-```json
-{
-    "FECHA": "16/04/2025",
-    "HORA": "11:03:34",
-    "CLIENTE": "1000",
-    "CAMPANA": "1151"
+    "waiting": [],
+    "active": [],
+    "completed": [],
+    "failed": []
 }
 ```
 

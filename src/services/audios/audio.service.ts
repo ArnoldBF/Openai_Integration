@@ -32,7 +32,10 @@ export class AudioService {
         return audio;
     }
     async getAudioProcessor(fileName: string): Promise<Partial<Audio> | null> {
-        const audio = await this.audioRepository.findOneBy({ fileName });
+        const audio = await this.audioRepository.findOneBy({
+            fileName,
+            transcrito: 1,
+        });
 
         return audio;
     }

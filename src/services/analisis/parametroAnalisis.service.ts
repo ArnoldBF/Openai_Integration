@@ -12,7 +12,7 @@ export class ParametroAnalisisService {
     constructor() {}
 
     public async createParametro(data: IParametroCreate): Promise<Parametro> {
-        const { promptId, tipoId, ...resto } = data;
+        const { name, promptId, tipoId, ...resto } = data;
 
         const prompt = await this.promptRepository.findOneBy({
             id: data.promptId,
@@ -34,6 +34,7 @@ export class ParametroAnalisisService {
         }
 
         const dataParametros = {
+            name,
             prompt,
             tipo,
             ...resto,

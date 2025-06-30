@@ -25,13 +25,25 @@ export async function connectDatabase() {
     try {
         await AppDataSource.initialize();
         console.log("Data Source has been initialized!");
+        await AppDataSource.runMigrations();
         console.log(
             "Entities:",
             AppDataSource.entityMetadatas.map((e) => e.name)
         );
-        //await AppDataSource.runMigrations();
-        // console.log("Migrations have been run!");
     } catch (err) {
         console.error("Error during Data Source initialization", err);
     }
 }
+
+export async function migrationRun() {
+    try {
+        await AppDataSource.runMigrations();
+        return "Migrations have been run!";
+    } catch (err) {
+        return `Error during migrations run : ${err}`;
+    }
+}
+
+// migrationRun()
+//     .then((r) => console.log(r))
+//     .catch((e) => console.error(e));

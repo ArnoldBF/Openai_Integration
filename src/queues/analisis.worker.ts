@@ -13,17 +13,20 @@ async function startWorker() {
         "analisis",
         async (job) => {
             const { parametroAnalisis, servicio, filtroArchivos } = job.data;
-            await configurarAnalisis(
+            const resultado = await configurarAnalisis(
                 parametroAnalisis,
                 servicio,
                 filtroArchivos
             );
+
+            return resultado;
         },
         {
             connection: {
                 host: "localhost",
                 port: 6379,
             },
+            concurrency: 2,
         }
     );
 
