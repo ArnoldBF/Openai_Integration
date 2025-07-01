@@ -13,6 +13,10 @@ export async function getDataAudioByAudioId(
         const dataAudios = await dataAudioService.getDataAudioByAudioId(
             audioId
         );
+        console.log(
+            "dataAudioExistente (detallado):",
+            JSON.stringify(dataAudios, null, 2)
+        );
         // Siempre responder 200, aunque el array esté vacío
         return res.status(200).json(dataAudios || []);
     } catch (error) {
