@@ -120,12 +120,19 @@ export class AudioProcessor {
             }
             let audio = audioExiste;
 
+            // Si el audio no existe, lo creamos y guardamos data_audio
             if (!audio) {
                 audio = await this.procesarAudios(
                     audioData,
                     datos,
                     archivoTexto
                 );
+            } else {
+                const dataAudioExistente =
+                    await this.dataAudioService.getDataAudioByAudioId(audio.id);
+                if (!dataAudioExistente || dataAudioExistente.length === 0) {
+                    await this.guardarDataAudio(audio, datos);
+                }
             }
 
             const transcripcion = await this.reintentarTranscripcion(
@@ -306,5 +313,28 @@ export class AudioProcessor {
         }
 
         return audio;
+    }
+
+    // Método para guardar data_audio para un audio existente
+    private async guardarDataAudio(audio: any, datos: any) {
+        const registroData = Object.entries(datos).map(([clave, valor]) => ({
+            audio: audio,
+            clave,
+            valor: valor?.toString() || "", // Aseguramos que el valor sea un string
+        }));
+
+        for (const data of registroData) {
+            const claveAudio = await this.claveAudioService.getClaveById(
+                data.clave
+            );
+            if (claveAudio?.clave === data.clave) {
+                const dataAudio: DataAudioInterface = {
+                    audio: data.audio,
+                    clave: claveAudio,
+                    valor: String(data.valor),
+                };
+                await this.dataAudioService.createDataAudio(dataAudio);
+            }
+        }
     }
 }
