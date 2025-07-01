@@ -14,6 +14,8 @@ import colaAnalisisRouter from "./colaAnalisis.router";
 
 import claveAudioRouter from "./claveAudio.router";
 
+import dataAudioRouter from "./dataAudios.router";
+
 export {
     promptRouter,
     tipoAnalisisRouter,
@@ -23,4 +25,5 @@ export {
     clienteRouter,
     colaAnalisisRouter,
     claveAudioRouter,
+    dataAudioRouter,
 };

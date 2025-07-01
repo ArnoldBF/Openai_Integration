@@ -14,6 +14,7 @@ import {
     clienteRouter,
     colaAnalisisRouter,
     claveAudioRouter,
+    dataAudioRouter,
 } from "../routes";
 import {
     logErrors,
@@ -45,6 +46,7 @@ class Server {
             cliente: "/api/clientes",
             colaAnalisis: "/api/cola-analisis",
             claveAudio: "/api/clave-audio",
+            dataAudio: "/api/data-audios",
         };
 
         const serverAdapter = new ExpressAdapter();
@@ -83,6 +85,7 @@ class Server {
         this.app.use(this.paths.cliente, clienteRouter);
         this.app.use(this.paths.colaAnalisis, colaAnalisisRouter);
         this.app.use(this.paths.claveAudio, claveAudioRouter);
+        this.app.use(this.paths.dataAudio, dataAudioRouter);
         this.app.use(logErrors);
         this.app.use(boomErrorHandler);
         this.app.use(uniqueConstraintErrorHandler);
