@@ -100,9 +100,23 @@ export class AudioProcessor {
                 ),
             ]);
 
-            if (audioExiste && audioExiste.transcrito === 1) {
+            // Validar existencia de data_audio si el audio ya está transcrito
+            let dataAudioExistente: any[] = [];
+            if (audioExiste) {
+                dataAudioExistente =
+                    await this.dataAudioService.getDataAudioByAudioId(
+                        audioExiste.id
+                    );
+            }
+
+            if (
+                audioExiste &&
+                audioExiste.transcrito === 1 &&
+                Array.isArray(dataAudioExistente) &&
+                dataAudioExistente.length > 0
+            ) {
                 mensajes.push(
-                    `Audio ya existe y ya esta trasncrito en la base de datos: ${path.basename(
+                    `Audio ya existe, ya esta trasncrito y tiene data en la base de datos: ${path.basename(
                         archivoAudio
                     )}`
                 );
@@ -115,7 +129,6 @@ export class AudioProcessor {
                 );
             }
             if (mensajes.length) {
-                // console.log(mensajes.join("\n"));
                 return mensajes;
             }
             let audio = audioExiste;
@@ -128,8 +141,6 @@ export class AudioProcessor {
                     archivoTexto
                 );
             } else {
-                const dataAudioExistente =
-                    await this.dataAudioService.getDataAudioByAudioId(audio.id);
                 if (
                     !Array.isArray(dataAudioExistente) ||
                     dataAudioExistente.length === 0
