@@ -130,7 +130,10 @@ export class AudioProcessor {
             } else {
                 const dataAudioExistente =
                     await this.dataAudioService.getDataAudioByAudioId(audio.id);
-                if (!dataAudioExistente || dataAudioExistente.length === 0) {
+                if (
+                    !Array.isArray(dataAudioExistente) ||
+                    dataAudioExistente.length === 0
+                ) {
                     await this.guardarDataAudio(audio, datos);
                 }
             }
@@ -287,31 +290,26 @@ export class AudioProcessor {
         archivoTexto?: string
     ) {
         const audio = await this.audioService.createAudio(audioData);
-        if (archivoTexto) {
-            const registroData = Object.entries(datos).map(
-                ([clave, valor]) => ({
-                    audio: audio,
-                    clave,
-                    valor: valor?.toString() || "", // Aseguramos que el valor sea un string
-                })
-            );
+        // Siempre guardar data_audio usando los datos extraídos (de texto o metadata)
+        const registroData = Object.entries(datos).map(([clave, valor]) => ({
+            audio: audio,
+            clave,
+            valor: valor?.toString() || "", // Aseguramos que el valor sea un string
+        }));
 
-            for (const data of registroData) {
-                const claveAudio = await this.claveAudioService.getClaveById(
-                    data.clave
-                );
-                console.log(data.valor);
-                if (claveAudio?.clave === data.clave) {
-                    const dataAudio: DataAudioInterface = {
-                        audio: data.audio,
-                        clave: claveAudio,
-                        valor: String(data.valor),
-                    };
-                    await this.dataAudioService.createDataAudio(dataAudio);
-                }
+        for (const data of registroData) {
+            const claveAudio = await this.claveAudioService.getClaveById(
+                data.clave
+            );
+            if (claveAudio?.clave === data.clave) {
+                const dataAudio: DataAudioInterface = {
+                    audio: data.audio,
+                    clave: claveAudio,
+                    valor: String(data.valor),
+                };
+                await this.dataAudioService.createDataAudio(dataAudio);
             }
         }
-
         return audio;
     }
 
