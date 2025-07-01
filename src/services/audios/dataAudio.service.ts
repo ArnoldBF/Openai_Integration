@@ -42,6 +42,14 @@ export class DataAudioService {
         return dataAudio;
     }
 
+    // Devuelve todos los registros de data_audio asociados a un audio por su id
+    async getDataAudioByAudioId(audioId: number) {
+        return await this.dataAudioRepository.find({
+            where: { audio: { id: audioId } },
+            relations: ["audio", "clave"],
+        });
+    }
+
     // async updateAudio(id: number, audio: AudioInterface) {
     //     await this.audioRepository.update(id, audio);
     //     return await this.audioRepository.findOne(id);
