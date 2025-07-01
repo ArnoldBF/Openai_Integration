@@ -120,17 +120,10 @@ export class AudioProcessor {
                         archivoAudio
                     )}`
                 );
-            }
-            if (transcripcionExiste) {
-                mensajes.push(
-                    `Transcripcion ya existe para ${path.basename(
-                        archivoAudio
-                    )}`
-                );
-            }
-            if (mensajes.length) {
+
                 return mensajes;
             }
+
             let audio = audioExiste;
 
             // Si el audio no existe, lo creamos y guardamos data_audio
