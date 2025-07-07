@@ -1,4 +1,3 @@
-import { AppDataSource } from "../config/typeOrm";
 import fs from "fs/promises";
 import {
     AudioService,
@@ -14,6 +13,8 @@ import {
 } from "../services";
 import { DataExtractorTxt } from "../helpers/dataExtractorTxt";
 import { extraerMetadataAudio } from "../helpers/audioMetadataExtractor";
+
+import { generarFormatoRespuesta } from "../helpers/generarFormatoRespuesta";
 
 import { TranscripcionUseCase } from "./transcripcionUseCase";
 import { AnalisisUseCase } from "../useCases/analisisUseCase";
@@ -74,7 +75,7 @@ export class AudioProcessor {
     ): Promise<string[] | void> {
         await this.validarExistenciaArchivos(archivoAudio, archivoTexto);
 
-        const datos = archivoTexto
+        const datos: any = archivoTexto
             ? await this.dataExtractor.extraerDatos(archivoTexto)
             : await extraerMetadataAudio(archivoAudio);
 
@@ -159,12 +160,15 @@ export class AudioProcessor {
             //     await this.tipoAnalisisService.getTipoAnalisisById(
             //         tipoAnalisisSeleccionado
             //     );
-
+            const { FECHA, MD_FECHA_CREACION } = datos;
             const variables = {
                 contexto: parametroAnalisis.tipo.description, // consulta para traer el tipo de analisis
                 transcripcion: transcripcionData.transcripcion, // consulta para traer la transcirpcion
                 parametrosAnalisis: arregloParametros,
-                formatoRespuesta: "JSON",
+                formatoRespuesta: generarFormatoRespuesta(arregloParametros),
+                // formatoRespuesta: "JSON",
+                fechaActual: new Date().toISOString().split("T")[0],
+                fechaLlamada: FECHA || MD_FECHA_CREACION,
             };
 
             const analisis = await this.reintentarAnalisis(variables);

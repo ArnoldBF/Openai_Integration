@@ -85,6 +85,8 @@ export async function configurarAnalisis(
         "transcripcion",
         "parametrosAnalisis",
         "formatoRespuesta",
+        "fechaActual",
+        "fechaLlamada",
     ]);
 
     const resultadoMover = await moverArchivos(
