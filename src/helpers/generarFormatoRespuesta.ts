@@ -21,15 +21,15 @@ export function generarFormatoRespuesta(campos: any[]): string {
         "\n}"
     );
 }
-const campos = [
-    "compromiso_pago",
-    "fecha_pago",
-    "reclamo",
-    "motivo_reclamo",
-    "objecion",
-    "motivo_objecion",
-    "malas_palabras",
-    "saludo_cordial",
-];
+// const campos = [
+//     "compromiso_pago",
+//     "fecha_pago",
+//     "reclamo",
+//     "motivo_reclamo",
+//     "objecion",
+//     "motivo_objecion",
+//     "malas_palabras",
+//     "saludo_cordial",
+// ];
 
-console.log(generarFormatoRespuesta(campos));
+// console.log(generarFormatoRespuesta(campos));
