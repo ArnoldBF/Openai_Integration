@@ -33,4 +33,5 @@ export function generarFormatoRespuesta(campos: any[]): string {
 //     "saludo_cordial",
 // ];
 
+
 // console.log(generarFormatoRespuesta(campos));
