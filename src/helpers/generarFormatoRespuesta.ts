@@ -3,6 +3,7 @@ export function generarFormatoRespuesta(campos: any[]): string {
     const json: Record<string, string> = {};
 
     for (const campo of campos) {
+        if (!campo) continue;
         const campoUpper = campo.toUpperCase();
         if (campoUpper.includes("FECHA")) {
             json[campo] = '"AAAA-MM-DD" / "N/A"';
