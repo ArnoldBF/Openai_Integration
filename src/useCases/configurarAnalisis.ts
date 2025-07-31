@@ -47,6 +47,10 @@ export async function configurarAnalisis(
     const parametroAnalisisService = new ParametroAnalisisService();
     const parametrosAnalisisObjeto =
         await parametroAnalisisService.getParametroById(parametrosAnalisis);
+    console.log(
+        "[DEBUG] ID de parametroAnalisis usado en configurarAnalisis:",
+        parametrosAnalisisObjeto?.id
+    );
 
     if (parametrosAnalisisObjeto === null) {
         throw boom.badRequest(

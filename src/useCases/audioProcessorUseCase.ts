@@ -74,6 +74,10 @@ export class AudioProcessor {
         archivoTexto?: string
     ): Promise<string[] | void> {
         await this.validarExistenciaArchivos(archivoAudio, archivoTexto);
+        console.log(
+            "[DEBUG] ID de parametroAnalisis recibido en procesarArchivo:",
+            parametroAnalisis?.id
+        );
 
         const datos: any = archivoTexto
             ? await this.dataExtractor.extraerDatos(archivoTexto)
