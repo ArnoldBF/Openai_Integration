@@ -12,9 +12,9 @@ async function startWorker() {
     const worker = new Worker(
         "analisis",
         async (job) => {
-            const { parametroAnalisis, servicio, filtroArchivos } = job.data;
+            const { parametrosAnalisis, servicio, filtroArchivos } = job.data;
             const resultado = await configurarAnalisis(
-                parametroAnalisis,
+                parametrosAnalisis,
                 servicio,
                 filtroArchivos
             );
@@ -28,7 +28,6 @@ async function startWorker() {
             },
             concurrency: 2,
             lockDuration: 12600000, // 3.5 horas en milisegundos
-
         }
     );
 
