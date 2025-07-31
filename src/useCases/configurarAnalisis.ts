@@ -44,6 +44,10 @@ export async function configurarAnalisis(
     servicio: number,
     filtroArchivos: string[]
 ): Promise<{}> {
+    console.log(
+        "[DEBUG] ID de parametroAnalisis recibdo en parametro configurarAnalisis:",
+        parametrosAnalisis
+    );
     const parametroAnalisisService = new ParametroAnalisisService();
     const parametrosAnalisisObjeto =
         await parametroAnalisisService.getParametroById(parametrosAnalisis);
