@@ -8,12 +8,15 @@ export async function crearColaAnalisis(
     res: Response
 ): Promise<any> {
     const { parametrosAnalisis, servicio, filtroArchivos } = req.body;
-
+    console.log("[DEBUG] req.body en crearColaAnalisis:", req.body);
     const parametroAnalisisService = new ParametroAnalisisService();
     const existeParametro = await parametroAnalisisService.getParametroById(
         parametrosAnalisis
     );
-
+    console.log(
+        "[DEBUG] existeParametro en crearColaAnalisis:",
+        existeParametro
+    );
     const servicioService = new ServicioService();
     const existeServicio = await servicioService.getServicioById(servicio);
 
