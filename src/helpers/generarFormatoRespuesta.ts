@@ -3,9 +3,10 @@ export function generarFormatoRespuesta(campos: any[]): string {
     const json: Record<string, string> = {};
 
     for (const campo of campos) {
-        if (campo.includes("fecha")) {
+        const campoLower = campo.toLowerCase();
+        if (campoLower.includes("fecha")) {
             json[campo] = '"AAAA-MM-DD" / "N/A"';
-        } else if (campo.startsWith("motivo_")) {
+        } else if (campoLower.startsWith("motivo_")) {
             json[campo] = '"texto" / "N/A"';
         } else {
             json[campo] = comunes.join(" / ");
