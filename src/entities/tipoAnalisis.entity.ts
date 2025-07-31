@@ -19,7 +19,7 @@ export class TipoAnalisis {
     @Column()
     name!: string;
 
-    @Column()
+    @Column({ type: "varchar", length: 255 })
     description!: string;
 
     @CreateDateColumn({ type: "datetime2", default: () => "CURRENT_TIMESTAMP" })

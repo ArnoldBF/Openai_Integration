@@ -3,10 +3,10 @@ export function generarFormatoRespuesta(campos: any[]): string {
     const json: Record<string, string> = {};
 
     for (const campo of campos) {
-        const campoLower = campo.toLowerCase();
-        if (campoLower.includes("fecha")) {
+        const campoUpper = campo.toUpperCase();
+        if (campoUpper.includes("FECHA")) {
             json[campo] = '"AAAA-MM-DD" / "N/A"';
-        } else if (campoLower.startsWith("motivo_")) {
+        } else if (campoUpper.startsWith("MOTIVO")) {
             json[campo] = '"texto" / "N/A"';
         } else {
             json[campo] = comunes.join(" / ");
@@ -32,6 +32,5 @@ export function generarFormatoRespuesta(campos: any[]): string {
 //     "malas_palabras",
 //     "saludo_cordial",
 // ];
-
 
 // console.log(generarFormatoRespuesta(campos));
