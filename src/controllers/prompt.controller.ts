@@ -8,8 +8,16 @@ export async function createPrompt(
     next: NextFunction
 ) {
     try {
+        const { servicio } = (req as any).user;
+        const { name, template } = req.body;
+
+        const data = {
+            name,
+            template,
+            servicio,
+        };
         const promptService = new PromptService();
-        const prompt = await promptService.createPrompt(req.body);
+        const prompt = await promptService.createPrompt(data);
         res.status(201).json(prompt);
     } catch (error) {
         next(error);
@@ -22,8 +30,11 @@ export async function getPromptsAll(
     next: NextFunction
 ) {
     try {
+        const { servicio } = (req as any).user;
         const promptService = new PromptService();
-        const prompts = await promptService.getPromptsAllEndPoint();
+        const prompts = await promptService.getPromptsAllEndPoint(
+            Number(servicio)
+        );
         res.status(200).json(prompts);
     } catch (error) {
         next(error);

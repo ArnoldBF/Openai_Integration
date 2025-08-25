@@ -11,17 +11,28 @@ import {
     updatePrompt,
 } from "../controllers/prompt.controller";
 
+import { extraerDatosJWT } from "../middlewares/comprobarJwt";
+import passport from "passport";
+
 const router = Router();
 
-router.get("/all", getPromptsAll);
-router.get("/:id", getPrompt);
+router.get(
+    "/all",
+    passport.authenticate("jwt", { session: false }),
+    extraerDatosJWT,
+    getPromptsAll
+);
+router.get("/:id", passport.authenticate("jwt", { session: false }), getPrompt);
 router.post(
     "/crear",
+    passport.authenticate("jwt", { session: false }),
+    extraerDatosJWT,
     validatorHandler(createPromptSchema, "body"),
     createPrompt
 );
 router.put(
-    "/:id",
+    "/actualizar/:id",
+    passport.authenticate("jwt", { session: false }),
     validatorHandler(updatePromptSchema, "body"),
     // validatorHandler(getPromptSchema, "params"),
     // validatorHandler(updatePromptSchema, "body"),

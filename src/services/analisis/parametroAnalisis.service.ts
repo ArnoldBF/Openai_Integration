@@ -1,13 +1,15 @@
-import { Parametro, Prompt, TipoAnalisis } from "../../entities";
+import { Parametro, Prompt, Servicio, TipoAnalisis } from "../../entities";
 
 import { IParametroCreate } from "../../interfaces/IParametroCreate";
 
 import { AppDataSource } from "../../config/typeOrm";
+import { error } from "console";
 
 export class ParametroAnalisisService {
     private parametroRepository = AppDataSource.getRepository(Parametro);
     private promptRepository = AppDataSource.getRepository(Prompt);
     private tipoAnalisisRepository = AppDataSource.getRepository(TipoAnalisis);
+    private readonly servicioRepository = AppDataSource.getRepository(Servicio);
 
     constructor() {}
 
@@ -64,9 +66,19 @@ export class ParametroAnalisisService {
         });
     }
 
-    public async getAllParametrosEndPoint(): Promise<Parametro[]> {
+    public async getAllParametrosEndPoint(
+        servicioId: number
+    ): Promise<Parametro[]> {
+        const tipoAnalisisExiste = await this.tipoAnalisisRepository.findOneBy({
+            servicio: { id: servicioId },
+        });
+
+        if (!tipoAnalisisExiste) {
+            throw new Error("tipo analisis no encontrado");
+        }
         return await this.parametroRepository.find({
             select: ["id", "name"],
+            where: { tipo: { id: tipoAnalisisExiste.id } },
         });
     }
 

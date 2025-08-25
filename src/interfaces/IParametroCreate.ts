@@ -12,4 +12,19 @@ export interface IParametroCreate {
     campo_8?: string;
     campo_9?: string;
     campo_10?: string;
+    campo_11?: string;
+    campo_12?: string;
+    campo_13?: string;
+    campo_14?: string;
+    campo_15?: string;
+    campo_16?: string;
+    campo_17?: string;
+    campo_18?: string;
+    campo_19?: string;
+    campo_20?: string;
+    campo_21?: string;
+    campo_22?: string;
+    campo_23?: string;
+    campo_24?: string;
+    campo_25?: string;
 }

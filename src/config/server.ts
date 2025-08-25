@@ -15,6 +15,8 @@ import {
     colaAnalisisRouter,
     claveAudioRouter,
     dataAudioRouter,
+    usuarioRouter,
+    authRouter,
 } from "../routes";
 import {
     logErrors,
@@ -24,6 +26,7 @@ import {
 } from "../middlewares/error.handler";
 
 import cors from "cors";
+import "../helpers/auth";
 
 class Server {
     public app: Application;
@@ -35,8 +38,7 @@ class Server {
         this.port = config.port;
 
         this.paths = {
-            users: "/api/users",
-            persons: "/api/persons",
+            usuarios: "/api/usuarios",
             auth: "/api/auth",
             prompts: "/api/prompts",
             tipoAnalisis: "/api/tipo-analisis",
@@ -75,7 +77,7 @@ class Server {
     private routes() {
         // this.app.use(this.paths.users, userRouter);
         // this.app.use(this.paths.persons, personRouter);
-        // this.app.use(this.paths.auth, authRouter);
+        this.app.use(this.paths.auth, authRouter);
 
         this.app.use(this.paths.prompts, promptRouter);
         this.app.use(this.paths.tipoAnalisis, tipoAnalisisRouter);
@@ -86,6 +88,7 @@ class Server {
         this.app.use(this.paths.colaAnalisis, colaAnalisisRouter);
         this.app.use(this.paths.claveAudio, claveAudioRouter);
         this.app.use(this.paths.dataAudio, dataAudioRouter);
+        this.app.use(this.paths.usuarios, usuarioRouter);
         this.app.use(logErrors);
         this.app.use(boomErrorHandler);
         this.app.use(uniqueConstraintErrorHandler);

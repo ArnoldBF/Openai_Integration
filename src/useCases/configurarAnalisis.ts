@@ -76,7 +76,22 @@ export async function configurarAnalisis(
         parametrosAnalisisObjeto?.campo_7 !== null ||
         parametrosAnalisisObjeto?.campo_8 !== null ||
         parametrosAnalisisObjeto?.campo_9 !== null ||
-        parametrosAnalisisObjeto?.campo_10 !== null
+        parametrosAnalisisObjeto?.campo_10 !== null ||
+        parametrosAnalisisObjeto?.campo_11 !== null ||
+        parametrosAnalisisObjeto?.campo_12 !== null ||
+        parametrosAnalisisObjeto?.campo_13 !== null ||
+        parametrosAnalisisObjeto?.campo_14 !== null ||
+        parametrosAnalisisObjeto?.campo_15 !== null ||
+        parametrosAnalisisObjeto?.campo_16 !== null ||
+        parametrosAnalisisObjeto?.campo_17 !== null ||
+        parametrosAnalisisObjeto?.campo_18 !== null ||
+        parametrosAnalisisObjeto?.campo_19 !== null ||
+        parametrosAnalisisObjeto?.campo_20 !== null ||
+        parametrosAnalisisObjeto?.campo_21 !== null ||
+        parametrosAnalisisObjeto?.campo_22 !== null ||
+        parametrosAnalisisObjeto?.campo_23 !== null ||
+        parametrosAnalisisObjeto?.campo_24 !== null ||
+        parametrosAnalisisObjeto?.campo_25 !== null
     ) {
         arregloParametros.push(
             parametrosAnalisisObjeto?.campo_4,
@@ -85,7 +100,22 @@ export async function configurarAnalisis(
             parametrosAnalisisObjeto?.campo_7,
             parametrosAnalisisObjeto?.campo_8,
             parametrosAnalisisObjeto?.campo_9,
-            parametrosAnalisisObjeto?.campo_10
+            parametrosAnalisisObjeto?.campo_10,
+            parametrosAnalisisObjeto?.campo_11,
+            parametrosAnalisisObjeto?.campo_12,
+            parametrosAnalisisObjeto?.campo_13,
+            parametrosAnalisisObjeto?.campo_14,
+            parametrosAnalisisObjeto?.campo_15,
+            parametrosAnalisisObjeto?.campo_16,
+            parametrosAnalisisObjeto?.campo_17,
+            parametrosAnalisisObjeto?.campo_18,
+            parametrosAnalisisObjeto?.campo_19,
+            parametrosAnalisisObjeto?.campo_20,
+            parametrosAnalisisObjeto?.campo_21,
+            parametrosAnalisisObjeto?.campo_22,
+            parametrosAnalisisObjeto?.campo_23,
+            parametrosAnalisisObjeto?.campo_24,
+            parametrosAnalisisObjeto?.campo_25
         );
     }
     const promptTemplate = new PromptTemplateAdapter(template, [

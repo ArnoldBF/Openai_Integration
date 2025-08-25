@@ -14,7 +14,7 @@ export class DataAnalisis {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column()
+    @Column({ type: "varchar", length: "MAX", nullable: true })
     valor!: string;
 
     @CreateDateColumn({ type: "datetime2", default: () => "CURRENT_TIMESTAMP" })

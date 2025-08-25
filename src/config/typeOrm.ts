@@ -25,7 +25,7 @@ export async function connectDatabase() {
     try {
         await AppDataSource.initialize();
         console.log("Data Source has been initialized!");
-        await AppDataSource.runMigrations();
+        // await AppDataSource.runMigrations();
         console.log(
             "Entities:",
             AppDataSource.entityMetadatas.map((e) => e.name)

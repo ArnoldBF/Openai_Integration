@@ -12,7 +12,7 @@ export class ClaveAudio {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column({ unique: true })
+    @Column()
     clave!: string;
 
     @Column()

@@ -12,7 +12,7 @@ export class Cliente {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column({ unique: true })
+    @Column({ type: "varchar", length: 255, unique: true })
     name!: string;
 
     @CreateDateColumn({ type: "datetime2", default: () => "CURRENT_TIMESTAMP" })

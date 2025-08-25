@@ -4,10 +4,19 @@ import {
     createServicio,
     getServiciosAll,
 } from "../controllers/servicio.controller";
+import passport from "passport";
 
 const router = Router();
-router.post("/crear", createServicio);
+router.post(
+    "/crear",
+    passport.authenticate("jwt", { session: false }),
+    createServicio
+);
 
-router.get("/all", getServiciosAll);
+router.get(
+    "/all",
+    passport.authenticate("jwt", { session: false }),
+    getServiciosAll
+);
 
 export default router;

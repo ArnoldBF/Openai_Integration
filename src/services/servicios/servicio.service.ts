@@ -1,4 +1,4 @@
-import { Servicio, Cliente } from "../../entities";
+import { Servicio, Cliente, Usuario } from "../../entities";
 
 import { AppDataSource } from "../../config/typeOrm";
 
@@ -34,10 +34,13 @@ export class ServicioService {
         });
     }
 
-    public async getAllServiciosEndPoint(): Promise<Servicio[]> {
+    public async getAllServiciosEndPoint(
+        usuarioId: number
+    ): Promise<Servicio[]> {
         return await this.servicioRepository.find({
             select: ["id", "name"],
-            // relations: ["cliente"],
+            relations: ["usuario"],
+            where: { usuario: { id: usuarioId } },
         });
     }
 

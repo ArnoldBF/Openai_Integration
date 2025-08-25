@@ -10,6 +10,8 @@ import { Analisis } from "./analisis.entity";
 import { Parametro } from "./parametros.entity";
 import { DataAnalisis } from "./dataAnalisis.entity";
 import { ClaveAnalisis } from "./claveAnalisis.entity";
+import { Usuario } from "./usuario.entity";
+import { Empleado } from "./empleado.entity";
 export {
     Audio,
     DataAudio,
@@ -23,4 +25,6 @@ export {
     Parametro,
     DataAnalisis,
     ClaveAnalisis,
+    Usuario,
+    Empleado,
 };

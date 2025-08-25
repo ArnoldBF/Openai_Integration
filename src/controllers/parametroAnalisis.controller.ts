@@ -24,9 +24,12 @@ export async function getParametrosAnalisisAll(
     next: NextFunction
 ) {
     try {
+        const { servicio } = (req as any).user;
         const parametroAnalisisService = new ParametroAnalisisService();
         const parametros =
-            await parametroAnalisisService.getAllParametrosEndPoint();
+            await parametroAnalisisService.getAllParametrosEndPoint(
+                Number(servicio)
+            );
         res.status(200).json(parametros);
     } catch (error) {
         next(error);

@@ -22,8 +22,11 @@ export async function getServiciosAll(
     next: NextFunction
 ) {
     try {
+        const { sub } = (req as any).user;
         const servicioService = new ServicioService();
-        const servicios = await servicioService.getAllServiciosEndPoint();
+        const servicios = await servicioService.getAllServiciosEndPoint(
+            Number(sub)
+        );
         res.status(200).json(servicios);
     } catch (error) {
         next(error);

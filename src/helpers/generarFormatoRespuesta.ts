@@ -5,7 +5,10 @@ export function generarFormatoRespuesta(campos: any[]): string {
     for (const campo of campos) {
         if (!campo) continue;
         const campoUpper = campo.toUpperCase();
-        if (campoUpper.includes("FECHA")) {
+        if (
+            campoUpper.includes("FECHA") &&
+            !campoUpper.endsWith("VENCIMIENTO")
+        ) {
             json[campo] = '"AAAA-MM-DD" / "N/A"';
         } else if (campoUpper.startsWith("MOTIVO")) {
             json[campo] = '"texto" / "N/A"';

@@ -9,13 +9,20 @@ import {
     OneToMany,
 } from "typeorm";
 
-import { Cliente, Audio } from "./index";
+import {
+    Cliente,
+    Audio,
+    ClaveAnalisis,
+    Prompt,
+    TipoAnalisis,
+    Usuario,
+} from "./index";
 @Entity("servicios")
 export class Servicio {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column({ unique: true })
+    @Column({ type: "varchar", length: 255, unique: true })
     name!: string;
 
     @CreateDateColumn({ type: "datetime2", default: () => "CURRENT_TIMESTAMP" })
@@ -32,4 +39,18 @@ export class Servicio {
 
     @OneToMany(() => Audio, (audio) => audio.servicio, { cascade: true })
     audio!: Audio[];
+
+    @OneToMany(() => ClaveAnalisis, (clave) => clave.servicio, {
+        cascade: true,
+    })
+    claveAnalisis!: ClaveAnalisis[];
+
+    @OneToMany(() => Prompt, (prompt) => prompt.servicio)
+    prompt!: Prompt[];
+
+    @OneToMany(() => TipoAnalisis, (tipoAnalisis) => tipoAnalisis.servicio)
+    tipoAnalisis!: TipoAnalisis[];
+
+    @OneToMany(() => Usuario, (usuario) => usuario.servicio, { cascade: true })
+    usuario!: Usuario[];
 }

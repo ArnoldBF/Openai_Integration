@@ -3,11 +3,31 @@ import { Router } from "express";
 import {
     createTipoAnalisis,
     getTiposAnalisisAll,
+    putTipoAnalisis,
 } from "../controllers/tipoAnalisis.controller";
 
-const router = Router();
-router.post("/crear", createTipoAnalisis);
+import { extraerDatosJWT } from "../middlewares/comprobarJwt";
+import passport from "passport";
 
-router.get("/all", getTiposAnalisisAll);
+const router = Router();
+router.post(
+    "/crear",
+    passport.authenticate("jwt", { session: false }),
+    extraerDatosJWT,
+    createTipoAnalisis
+);
+
+router.get(
+    "/all",
+    passport.authenticate("jwt", { session: false }),
+    extraerDatosJWT,
+    getTiposAnalisisAll
+);
+
+router.put(
+    "/actualizar/:id",
+    passport.authenticate("jwt", { session: false }),
+    putTipoAnalisis
+);
 
 export default router;

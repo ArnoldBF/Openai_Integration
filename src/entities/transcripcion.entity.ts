@@ -16,7 +16,7 @@ export class Transcripcion {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column({ name: "file_name", unique: true })
+    @Column({ name: "file_name", type: "varchar", length: 255, unique: true })
     @Index()
     fileName!: string;
     @Column({ nullable: true })

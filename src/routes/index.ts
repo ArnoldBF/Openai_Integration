@@ -16,6 +16,9 @@ import claveAudioRouter from "./claveAudio.router";
 
 import dataAudioRouter from "./dataAudios.router";
 
+import usuarioRouter from "./usuario.router";
+import authRouter from "./auth.router";
+
 export {
     promptRouter,
     tipoAnalisisRouter,
@@ -26,4 +29,6 @@ export {
     colaAnalisisRouter,
     claveAudioRouter,
     dataAudioRouter,
+    usuarioRouter,
+    authRouter,
 };

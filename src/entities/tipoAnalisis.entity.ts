@@ -9,17 +9,17 @@ import {
     OneToMany,
 } from "typeorm";
 
-import { Parametro } from "./index";
+import { Parametro, Servicio } from "./index";
 
 @Entity("tipo_analisis")
 export class TipoAnalisis {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column()
+    @Column({ type: "varchar", length: 255 })
     name!: string;
 
-    @Column({ type: "varchar" })
+    @Column({ type: "text", nullable: true })
     description!: string;
 
     @CreateDateColumn({ type: "datetime2", default: () => "CURRENT_TIMESTAMP" })
@@ -32,4 +32,10 @@ export class TipoAnalisis {
         onDelete: "CASCADE",
     })
     parametro!: Parametro[];
+
+    @ManyToOne(() => Servicio, (servicio) => servicio.tipoAnalisis, {
+        onDelete: "NO ACTION",
+    })
+    @JoinColumn({ name: "servicio_id" })
+    servicio!: Servicio;
 }

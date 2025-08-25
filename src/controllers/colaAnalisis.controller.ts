@@ -7,13 +7,14 @@ export async function crearColaAnalisis(
     req: Request,
     res: Response
 ): Promise<any> {
-    const { parametrosAnalisis, servicio, filtroArchivos } = req.body;
- 
+    const { servicio } = (req as any).user;
+    const { parametrosAnalisis, filtroArchivos } = req.body;
+
     const parametroAnalisisService = new ParametroAnalisisService();
     const existeParametro = await parametroAnalisisService.getParametroById(
         parametrosAnalisis
     );
-  
+
     const servicioService = new ServicioService();
     const existeServicio = await servicioService.getServicioById(servicio);
 

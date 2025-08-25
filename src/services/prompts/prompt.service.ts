@@ -1,5 +1,5 @@
 import { AppDataSource } from "../../config/typeOrm";
-import { Prompt } from "../../entities/index";
+import { Prompt, Servicio } from "../../entities/index";
 import { IUpdatePrompt } from "../../interfaces/IUpdatePrompt";
 import { IPromptCreate } from "../../interfaces/IPromptCreate";
 
@@ -7,9 +7,10 @@ import boom from "@hapi/boom";
 
 export class PromptService {
     private promptRepository = AppDataSource.getRepository(Prompt);
+    private readonly servicioRepository = AppDataSource.getRepository(Servicio);
     constructor() {}
 
-    public async createPrompt(data: IPromptCreate): Promise<Prompt> {
+    public async createPrompt(data: Partial<Prompt>): Promise<Prompt> {
         const prompt = this.promptRepository.create(data);
         return await this.promptRepository.save(prompt);
     }
@@ -18,9 +19,10 @@ export class PromptService {
         return await this.promptRepository.find();
     }
 
-    async getPromptsAllEndPoint(): Promise<Prompt[]> {
+    async getPromptsAllEndPoint(servicioId: number): Promise<Prompt[]> {
         return await this.promptRepository.find({
             select: ["id", "name", "template"],
+            where: { servicio: { id: servicioId } },
             // relations: ["cliente"],
         });
     }
