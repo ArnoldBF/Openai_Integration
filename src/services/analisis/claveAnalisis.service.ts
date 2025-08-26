@@ -26,7 +26,7 @@ export class ClaveAnalisisService {
         servicioId: number
     ): Promise<ClaveAnalisis[]> {
         return await this.claveAnalisisRepository.find({
-            select: ["id", "clave"],
+            select: ["id", "clave", "descripcion"],
             where: { servicio: { id: servicioId } },
         });
     }
