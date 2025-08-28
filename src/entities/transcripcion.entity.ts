@@ -19,7 +19,7 @@ export class Transcripcion {
     @Column({ name: "file_name", type: "varchar", length: 255, unique: true })
     @Index()
     fileName!: string;
-    @Column({ nullable: true })
+    @Column({ nullable: true,type:'text' })
     transcripcion!: string;
 
     @CreateDateColumn({ type: "datetime2", default: () => "CURRENT_TIMESTAMP" })
