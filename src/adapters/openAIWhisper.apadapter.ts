@@ -18,4 +18,15 @@ export class OpenAIAdapterWhisper implements IOpenAITranscribir {
         // console.log(file);
         return response.text;
     }
+
+    public async transcribeModeloGpt(filePath: string): Promise<string> {
+        const file = fs.createReadStream(filePath);
+
+        const response = await this.openAI.audio.transcriptions.create({
+            file: file,
+            model: "gpt-4o-transcribe",
+        });
+
+        return response.text;
+    }
 }

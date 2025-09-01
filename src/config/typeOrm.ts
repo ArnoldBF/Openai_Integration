@@ -19,6 +19,12 @@ export const AppDataSource = new DataSource({
         encrypt: false,
         trustServerCertificate: true,
     },
+    pool: {
+        max: 10,
+        min: 2,
+        idleTimeoutMillis: 3000,
+    },
+    requestTimeout: 60000,
 });
 
 export async function connectDatabase() {

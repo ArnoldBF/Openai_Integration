@@ -4,6 +4,7 @@ import { IParametroCreate } from "../../interfaces/IParametroCreate";
 
 import { AppDataSource } from "../../config/typeOrm";
 import { error } from "console";
+import { In } from "typeorm";
 
 export class ParametroAnalisisService {
     private parametroRepository = AppDataSource.getRepository(Parametro);
@@ -69,17 +70,23 @@ export class ParametroAnalisisService {
     public async getAllParametrosEndPoint(
         servicioId: number
     ): Promise<Parametro[]> {
-        const tipoAnalisisExiste = await this.tipoAnalisisRepository.findOneBy({
-            servicio: { id: servicioId },
+        const tipoAnalisisExiste = await this.tipoAnalisisRepository.find({
+            where: { servicio: { id: servicioId } },
+            relations: ["servicio"],
         });
 
-        if (!tipoAnalisisExiste) {
-            throw new Error("tipo analisis no encontrado");
+        if (!tipoAnalisisExiste.length) {
+            throw new Error("No hay tipos de analisis para este servicio");
         }
-        return await this.parametroRepository.find({
+
+        const tipoIds = tipoAnalisisExiste.map((tipo) => tipo.id);
+        console.log(tipoAnalisisExiste);
+        const parametros = await this.parametroRepository.find({
             select: ["id", "name"],
-            where: { tipo: { id: tipoAnalisisExiste.id } },
+            where: { tipo: { id: In(tipoIds) } },
         });
+
+        return parametros;
     }
 
     public async getParametroById(id: number): Promise<Parametro | null> {
