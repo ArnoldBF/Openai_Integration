@@ -7,7 +7,7 @@ export async function crearColaAnalisis(
     req: Request,
     res: Response
 ): Promise<any> {
-    const { servicio } = (req as any).user;
+    const { servicio, userName } = (req as any).user;
     const { parametrosAnalisis, filtroArchivos } = req.body;
 
     const parametroAnalisisService = new ParametroAnalisisService();
@@ -33,6 +33,7 @@ export async function crearColaAnalisis(
     }
 
     await analisisQueue.add("configurarAnalisis", {
+        userName,
         parametrosAnalisis,
         servicio,
         filtroArchivos,

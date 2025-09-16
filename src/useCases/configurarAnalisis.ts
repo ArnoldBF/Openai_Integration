@@ -63,13 +63,11 @@ export async function configurarAnalisis(
     }
 
     const template = parametrosAnalisisObjeto?.prompt.template;
-    const arregloParametros = [
-        parametrosAnalisisObjeto?.campo_1,
-        parametrosAnalisisObjeto?.campo_2,
-        parametrosAnalisisObjeto?.campo_3,
-    ];
+    const arregloParametros = [parametrosAnalisisObjeto?.campo_1];
 
     if (
+        parametrosAnalisisObjeto?.campo_2 !== null ||
+        parametrosAnalisisObjeto?.campo_3 !== null ||
         parametrosAnalisisObjeto?.campo_4 !== null ||
         parametrosAnalisisObjeto?.campo_5 !== null ||
         parametrosAnalisisObjeto?.campo_6 !== null ||
@@ -94,6 +92,8 @@ export async function configurarAnalisis(
         parametrosAnalisisObjeto?.campo_25 !== null
     ) {
         arregloParametros.push(
+            parametrosAnalisisObjeto?.campo_2,
+            parametrosAnalisisObjeto?.campo_3,
             parametrosAnalisisObjeto?.campo_4,
             parametrosAnalisisObjeto?.campo_5,
             parametrosAnalisisObjeto?.campo_6,
