@@ -32,8 +32,8 @@ export class ParametroAnalisisService {
             throw new Error("Tipo de análisis not found");
         }
 
-        if (!data.campo_1 || !data.campo_2 || !data.campo_3) {
-            throw new Error("campo_1, campo_2 and campo_3 are required");
+        if (!data.campo_1 ) {
+            throw new Error("campo_1 are required");
         }
 
         const dataParametros = {
