@@ -19,25 +19,26 @@ export class FileBatchProcessor {
     ): Promise<{ procesados: number; existentes: string[] }> {
         let procesados = 0;
         const existentes: string[] = [];
-
-        await Promise.all(
-            lote.map(async ({ texto, audio }) => {
+        for (const { texto, audio } of lote) {
+            try {
                 const mensajes = await this.audioProcessor.procesarArchivo(
                     servicioSeleccionado,
-
                     arregloParametros,
                     parametroAnalisis,
                     path.join(this.rutaCarpeta, audio),
                     path.join(this.rutaCarpeta, texto)
                 );
-
                 if (mensajes && mensajes.length) {
                     existentes.push(...mensajes);
                 } else {
                     procesados++;
                 }
-            })
-        );
+            } catch (error: any) {
+                existentes.push(
+                    `Error procesando archivo ${audio}: ${error.message}`
+                );
+            }
+        }
 
         return { procesados, existentes };
     }
@@ -51,8 +52,8 @@ export class FileBatchProcessor {
     ): Promise<{ procesados: number; existentes: string[] }> {
         let procesados = 0;
         const existentes: string[] = [];
-        await Promise.all(
-            lote.map(async (audio) => {
+        for (const audio of lote) {
+            try {
                 const mensajes = await this.audioProcessor.procesarArchivo(
                     servicioSeleccionado,
                     arregloParametros,
@@ -64,8 +65,12 @@ export class FileBatchProcessor {
                 } else {
                     procesados++;
                 }
-            })
-        );
+            } catch (error: any) {
+                existentes.push(
+                    `Error procesando archivo ${audio}: ${error.message}`
+                );
+            }
+        }
 
         return { procesados, existentes };
     }
