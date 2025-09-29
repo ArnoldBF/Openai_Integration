@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
     crearColaAnalisis,
+    crearColaAnalisisParaAnalisisEspecifico,
     estadoColaAnalisis,
 } from "../controllers/colaAnalisis.controller";
 import passport from "passport";
@@ -14,6 +15,13 @@ router.post(
     passport.authenticate("jwt", { session: false }),
     extraerDatosJWT,
     crearColaAnalisis
+);
+
+router.post(
+    "/crear-analisis-especifico",
+    passport.authenticate("jwt", { session: false }),
+    extraerDatosJWT,
+    crearColaAnalisisParaAnalisisEspecifico
 );
 
 router.get(

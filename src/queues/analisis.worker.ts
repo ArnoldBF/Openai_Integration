@@ -1,6 +1,9 @@
 import { Worker } from "bullmq";
 import { AppDataSource } from "../config/typeOrm";
-import { configurarAnalisis } from "../useCases/configurarAnalisis";
+import {
+    configurarAnalisis,
+    analizarTranscripcionesBatch,
+} from "../useCases/configurarAnalisis";
 
 async function startWorker() {
     // Inicializa TypeORM antes de crear el worker
@@ -12,14 +15,30 @@ async function startWorker() {
     const worker = new Worker(
         "analisis",
         async (job) => {
-            const { parametrosAnalisis, servicio, filtroArchivos } = job.data;
-            const resultado = await configurarAnalisis(
-                parametrosAnalisis,
-                servicio,
-                filtroArchivos
-            );
+            // const { parametrosAnalisis, servicio, filtroArchivos } = job.data;
+            // const resultado = await configurarAnalisis(
+            //     parametrosAnalisis,
+            //     servicio,
+            //     filtroArchivos
+            // );
 
-            return resultado;
+            // return resultado;
+            switch (job.name) {
+                case "procesoCompleto":
+                    return await configurarAnalisis(
+                        job.data.parametrosAnalisis,
+                        job.data.servicio,
+                        job.data.filtroArchivos
+                    );
+                case "procesoEspecifico":
+                    return await analizarTranscripcionesBatch(
+                        job.data.servicio,
+                        job.data.filtroArchivos,
+                        job.data.parametroAnalisis
+                    );
+                default:
+                    throw new Error(`Tipo de job no soportado: ${job.name}`);
+            }
         },
         {
             connection: {

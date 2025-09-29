@@ -19,9 +19,9 @@ export class Parametro {
 
     @Column({ nullable: false, type: "varchar", length: 255 })
     campo_1!: string;
-    @Column({ nullable: false, type: "varchar", length: 255 })
+    @Column({ nullable: true, type: "varchar", length: 255 })
     campo_2!: string;
-    @Column({ nullable: false, type: "varchar", length: 255 })
+    @Column({ nullable: true, type: "varchar", length: 255 })
     campo_3!: string;
     @Column({ nullable: true, type: "varchar", length: 255 })
     campo_4!: string;
