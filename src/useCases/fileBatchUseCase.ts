@@ -15,7 +15,7 @@ export class FileBatchProcessor {
         servicioSeleccionado: number,
         arregloParametros: (string | undefined)[],
         parametroAnalisis: any,
-        concurrency = 8 // Número de archivos a procesar en paralelo
+        concurrency = 10 // Número de archivos a procesar en paralelo
     ): Promise<{ procesados: number; existentes: string[] }> {
         let procesados = 0;
         const existentes: string[] = [];
@@ -64,7 +64,7 @@ export class FileBatchProcessor {
         servicioSeleccionado: number,
         arregloParametros: (string | undefined)[],
         parametroAnalisis: any,
-        concurrency = 8
+        concurrency = 10
     ): Promise<{ procesados: number; existentes: string[] }> {
         let procesados = 0;
         const existentes: string[] = [];

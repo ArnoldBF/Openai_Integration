@@ -24,7 +24,7 @@ export const AppDataSource = new DataSource({
         min: 2,
         idleTimeoutMillis: 3000,
     },
-    requestTimeout: 60000,
+    requestTimeout: 180000,
 });
 
 export async function connectDatabase() {
