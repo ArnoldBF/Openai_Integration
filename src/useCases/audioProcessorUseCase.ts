@@ -1,4 +1,5 @@
 import fs from "fs/promises";
+
 import {
     AudioService,
     DataAudioInterface,
@@ -79,6 +80,11 @@ export class AudioProcessor {
             parametroAnalisis?.id
         );
 
+      
+
+
+       
+
         const datos: any = archivoTexto
             ? await this.dataExtractor.extraerDatos(archivoTexto)
             : await extraerMetadataAudio(archivoAudio);
@@ -104,7 +110,6 @@ export class AudioProcessor {
                     path.basename(archivoAudio)
                 ),
             ]);
-
             // Validar existencia de data_audio si el audio ya está transcrito
             let dataAudioExistente: any[] = [];
             if (audioExiste) {
@@ -113,7 +118,6 @@ export class AudioProcessor {
                         audioExiste.id
                     );
             }
-
             if (
                 audioExiste &&
                 audioExiste.transcrito === 1 &&
@@ -125,7 +129,6 @@ export class AudioProcessor {
                         archivoAudio
                     )}`
                 );
-
                 return mensajes;
             }
 

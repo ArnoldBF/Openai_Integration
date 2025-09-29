@@ -1,5 +1,5 @@
 import path from "path";
-import { AudioProcessor } from "./audioProcessorUseCase";
+import { AudioProcessor } from "./audioProcessorUseCaseAtomicidad";
 
 export class FileBatchProcessor {
     private rutaCarpeta: string;
