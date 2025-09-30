@@ -31,95 +31,114 @@ export class AudioProcessorTrans {
         const transcripcionesNoEncontradas: string[] = [];
         const errores: string[] = [];
 
-        for (const id of idsLlamada) {
-            const queryRunner = AppDataSource.createQueryRunner();
-            await queryRunner.connect();
-            await queryRunner.startTransaction();
+        const concurrency = 5; // Ajusta este valor según tu servidor
+        let index = 0;
 
-            try {
-                const servicioRepo =
-                    queryRunner.manager.getRepository(Servicio);
-                const transcripcionRepo =
-                    queryRunner.manager.getRepository(Transcripcion);
-                const analisisRepo =
-                    queryRunner.manager.getRepository(Analisis);
-                const claveAnalisisRepo =
-                    queryRunner.manager.getRepository(ClaveAnalisis);
-                const dataAnalisisRepo =
-                    queryRunner.manager.getRepository(DataAnalisis);
+        while (index < idsLlamada.length) {
+            const chunk = idsLlamada.slice(index, index + concurrency);
+            await Promise.all(
+                chunk.map(async (id) => {
+                    const queryRunner = AppDataSource.createQueryRunner();
+                    await queryRunner.connect();
+                    await queryRunner.startTransaction();
 
-                // Validar que el servicio existe
-                const servicio = await servicioRepo.findOneBy({
-                    id: servicioSeleccionado,
-                });
-                if (!servicio) {
-                    throw new Error(
-                        `No se encontró el servicio con id ${servicioSeleccionado}`
-                    );
-                }
+                    try {
+                        const servicioRepo =
+                            queryRunner.manager.getRepository(Servicio);
+                        const transcripcionRepo =
+                            queryRunner.manager.getRepository(Transcripcion);
+                        const analisisRepo =
+                            queryRunner.manager.getRepository(Analisis);
+                        const claveAnalisisRepo =
+                            queryRunner.manager.getRepository(ClaveAnalisis);
+                        const dataAnalisisRepo =
+                            queryRunner.manager.getRepository(DataAnalisis);
 
-                const transcripcion = await transcripcionRepo.findOne({
-                    where: { fileName: Like(`%${id}%`) },
-                });
-
-                if (!transcripcion) {
-                    transcripcionesNoEncontradas.push(id);
-                    await queryRunner.rollbackTransaction();
-                    await queryRunner.release();
-                    continue;
-                }
-
-                const variables = {
-                    contexto: parametroAnalisis.tipo.description,
-                    transcripcion: transcripcion.transcripcion,
-                    parametrosAnalisis: arregloParametros,
-                    formatoRespuesta:
-                        generarFormatoRespuesta(arregloParametros),
-                    fechaActual: new Date().toISOString().split("T")[0],
-                    fechaLlamada: "NO_TOMAR_ENCUENTA_PARA_ANALISIS",
-                };
-
-                const analisis = await this.reintentarAnalisis(variables);
-
-                let analisisPorCrear: IAnalisisCreate = {
-                    transcripcion: transcripcion,
-                    parametro: parametroAnalisis,
-                };
-
-                const analisiCreado = analisisRepo.create(analisisPorCrear);
-                await analisisRepo.save(analisiCreado);
-
-                const analisisObj =
-                    typeof analisis === "string"
-                        ? JSON.parse(analisis)
-                        : analisis;
-                const clavesAnalisis = await claveAnalisisRepo.find();
-
-                for (const param of arregloParametros) {
-                    if (!param) continue;
-                    const clave = clavesAnalisis.find((c) => c.clave === param);
-                    if (
-                        clave &&
-                        Object.prototype.hasOwnProperty.call(analisisObj, param)
-                    ) {
-                        const valor = analisisObj[param];
-                        const dataAnalisis = dataAnalisisRepo.create({
-                            analisis: analisiCreado,
-                            clave: clave,
-                            valor: valor?.toString() || null,
+                        // Validar que el servicio existe
+                        const servicio = await servicioRepo.findOneBy({
+                            id: servicioSeleccionado,
                         });
-                        await dataAnalisisRepo.save(dataAnalisis);
-                    }
-                }
+                        if (!servicio) {
+                            throw new Error(
+                                `No se encontró el servicio con id ${servicioSeleccionado}`
+                            );
+                        }
 
-                await queryRunner.commitTransaction();
-                transcripcionesProcesadas.push(transcripcion.fileName);
-            } catch (err: any) {
-                await queryRunner.rollbackTransaction();
-                errores.push(`Error procesando id ${id}: ${err.message}`);
-            } finally {
-                await queryRunner.release();
-            }
+                        const transcripcion = await transcripcionRepo.findOne({
+                            where: { fileName: Like(`%${id}%`) },
+                        });
+
+                        if (!transcripcion) {
+                            transcripcionesNoEncontradas.push(id);
+                            await queryRunner.rollbackTransaction();
+                            await queryRunner.release();
+                            return;
+                        }
+
+                        const variables = {
+                            contexto: parametroAnalisis.tipo.description,
+                            transcripcion: transcripcion.transcripcion,
+                            parametrosAnalisis: arregloParametros,
+                            formatoRespuesta:
+                                generarFormatoRespuesta(arregloParametros),
+                            fechaActual: new Date().toISOString().split("T")[0],
+                            fechaLlamada: "NO_TOMAR_ENCUENTA_PARA_ANALISIS",
+                        };
+
+                        const analisis = await this.reintentarAnalisis(
+                            variables
+                        );
+
+                        let analisisPorCrear: IAnalisisCreate = {
+                            transcripcion: transcripcion,
+                            parametro: parametroAnalisis,
+                        };
+
+                        const analisiCreado =
+                            analisisRepo.create(analisisPorCrear);
+                        await analisisRepo.save(analisiCreado);
+
+                        const analisisObj =
+                            typeof analisis === "string"
+                                ? JSON.parse(analisis)
+                                : analisis;
+                        const clavesAnalisis = await claveAnalisisRepo.find();
+
+                        for (const param of arregloParametros) {
+                            if (!param) continue;
+                            const clave = clavesAnalisis.find(
+                                (c) => c.clave === param
+                            );
+                            if (
+                                clave &&
+                                Object.prototype.hasOwnProperty.call(
+                                    analisisObj,
+                                    param
+                                )
+                            ) {
+                                const valor = analisisObj[param];
+                                const dataAnalisis = dataAnalisisRepo.create({
+                                    analisis: analisiCreado,
+                                    clave: clave,
+                                    valor: valor?.toString() || null,
+                                });
+                                await dataAnalisisRepo.save(dataAnalisis);
+                            }
+                        }
+
+                        await queryRunner.commitTransaction();
+                        transcripcionesProcesadas.push(transcripcion.fileName);
+                    } catch (err: any) {
+                        await queryRunner.rollbackTransaction();
+                        errores.push(
+                            `Error procesando id ${id}: ${err.message}`
+                        );
+                    } finally {
+                        await queryRunner.release();
+                    }
+                })
+            );
+            index += concurrency;
         }
 
         return {
@@ -128,7 +147,6 @@ export class AudioProcessorTrans {
             errores,
         };
     }
-
     private async reintentarAnalisis(
         variables: Record<string, any>,
         reintentos = 3
