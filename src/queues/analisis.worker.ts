@@ -34,7 +34,7 @@ async function startWorker() {
                     return await analizarTranscripcionesBatch(
                         job.data.servicio,
                         job.data.filtroArchivos,
-                        job.data.parametroAnalisis
+                        job.data.parametrosAnalisis
                     );
                 default:
                     throw new Error(`Tipo de job no soportado: ${job.name}`);
