@@ -73,6 +73,7 @@ export class AudioProcessorTrans {
                         formatoRespuesta:
                             generarFormatoRespuesta(arregloParametros),
                         fechaActual: new Date().toISOString().split("T")[0],
+                        fechaLlamada: "NO_TOMAR_ENCUENTA_PARA_ANALISIS",
                     };
 
                     const analisis = await this.reintentarAnalisis(variables);
