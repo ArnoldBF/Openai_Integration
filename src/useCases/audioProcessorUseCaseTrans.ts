@@ -31,7 +31,7 @@ export class AudioProcessorTrans {
         const transcripcionesNoEncontradas: string[] = [];
         const errores: string[] = [];
 
-        const concurrency = 5; // Ajusta este valor según tu servidor
+        const concurrency = 20; // Ajusta este valor según tu servidor
         let index = 0;
 
         while (index < idsLlamada.length) {
