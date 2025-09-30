@@ -20,7 +20,7 @@ export const AppDataSource = new DataSource({
         trustServerCertificate: true,
     },
     pool: {
-        max: 10,
+        max: 50,
         min: 2,
         idleTimeoutMillis: 3000,
     },
